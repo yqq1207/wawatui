@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>销售出库单下发</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .number_1 {
+            width: 80px;
+        }
+        .bui-stdmod-body{
+        	overflow: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="search-grid-container">
+    <div id="grid"></div>
+</div>
+<div class="container">
+    <div id="content" class="hide">
+        <form id="J_Form" class="form-horizontal">
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>isv出库单号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="isvUUID" name="isvUUID" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>ISV来源编号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" name="isvSource" id="isvSource" disabled/>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>销售平台来源：</label>
+                    <div class="controls">
+                        <select id="salePlatformSource" name="salePlatformSource"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>事业部编号 ：</label>
+                    <div class="controls">
+                        <select name="departmentNo" id="departmentNo">
+                            <option value="">请选择</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>店铺编号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="shopNo" name="shopNo" disabled />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">销售平台订单号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="salesPlatformOrderNo" name="salesPlatformOrderNo" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>订单标记位：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="orderMark" name="orderMark" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>收货人姓名：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="consigneeName" name="consigneeName" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">仓库编号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="warehouseNo" name="warehouseNo" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">承运商编号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="shipperNo" name="shipperNo" value="CYS0000010" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">销售平台下单时间：</label>
+                    <div class="controls">
+                    	<input type="text" class="calendar calendar-time" id="salesPlatformCreateTime" name="salesPlatformCreateTime"/>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">订单类型：</label>
+                    <div class="controls">
+                        <select name="soType" id="soType">
+                        	<option value="1">B2C订单</option>
+                        	<option value="2">B2B订单</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>收货人手机：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="consigneeMobile" name="consigneeMobile" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">收货人电话：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="consigneePhone " name="consigneePhone " />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">收货人电话邮箱 ：</label>
+                    <div class="controls">
+                        <input type="email" class="input-middle" id="consigneeEmail" name="consigneeEmail" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">期望发货时间：</label>
+                    <div class="controls">
+                       <input type="text" class="calendar calendar-time" id="expectDate" name="expectDate"/>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">收货人省：</label>
+                    <div class="controls">
+                    	<select name="addressProvince" id="addressProvince">
+                    		<option value="1">北京</option>
+                    	</select>
+                    </div>
+                </div>
+                 <div class="control-group span7">
+                    <label class="control-label">收货人市：</label>
+                    <div class="controls">
+                    	<select name="addressCity" id="addressCity">
+                    		<option value="1">北京</option>
+                    	</select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                 <div class="control-group span7">
+                    <label class="control-label">收货人县：</label>
+                    <div class="controls">
+                    	<select name="addressCounty" id="addressCounty">
+                    		<option value="1">北京</option>
+                    	</select>
+                    </div>
+                </div>
+                 <div class="control-group span7">
+                    <label class="control-label">收货人镇：</label>
+                    <div class="controls">
+                    	<select name="addressTown" id="addressTown">
+                    		<option value="1">北京</option>
+                    	</select>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">收货人邮编：</label>
+                    <div class="controls">
+                       <input type="text"  id="consigneePostcode" name="consigneePostcode"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>收货人地址 ：</label>
+                    <div class="controls">
+                       <input type="text" id="consigneeAddress" name="consigneeAddress"/>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">应收金额 ：</label>
+                    <div class="controls">
+                       <input type="number" id="receivable" name="receivable"/>
+                    </div>
+                </div>
+                 <div class="control-group span7">
+                    <label class="control-label">客户留言 ：</label>
+                    <div class="controls">
+                       <input type="text" id="consigneeRemark" name="consigneeRemark"/>
+                       <!--<textarea name="consigneeRemark" rows="" cols=""></textarea>-->
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">三方运单号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="thirdWayBill" name="thirdWayBill" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">顺丰E标：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="packageMark" name="packageMark" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">业务类型 ：</label>
+                    <div class="controls">
+                        <input type="email" class="input-middle" id="businessType" name="businessType" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">目的地代码：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="destinationCode" name="destinationCode" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">目的地名称：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="destinationName" name="destinationName" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">发件网点代码：</label>
+                    <div class="controls">
+                        <input type="email" class="input-middle" id="sendWebsiteCode" name="sendWebsiteCode" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">发件网点名称：</label>
+                    <div class="controls">
+                        <input type="email" class="input-middle" id="sendWebsiteName" name="sendWebsiteName" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">寄件方式 ：</label>
+                    <div class="controls">
+                        <input type="email" class="input-middle" id="sendMode" name="sendMode" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">收件方式 ：</label>
+                    <div class="controls">
+                        <input type="email" class="input-middle" id="receiveMode" name="receiveMode" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">预约配送时间：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="appointDeliveryTime" name="appointDeliveryTime" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">是否保价：</label>
+                    <div class="controls">
+                    	<input type="radio" name="insuredPriceFlag" class="insuredPriceFlag" value="1" />是
+                      	<input type="radio" name="insuredPriceFlag" class="insuredPriceFlag" value="0" checked="checked"/>否
+                       
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">保价声明价值：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="insuredValue" name="insuredValue" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">保价费用 ：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="insuredValue" name="insuredValue" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">运费支付方式：</label>
+                    <div class="controls">
+                        <select name="thirdPayment" id="thirdPayment">
+                    		<option value="1">方式1</option>
+                    		<option value="2">方式2</option>
+                    	</select>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">月结账号 ：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="monthlyAccount" name="monthlyAccount" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">寄托物：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="shipment" name="shipment" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">模板备注：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="sellerRemark" name="sellerRemark" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">大头笔：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="thirdSite" name="thirdSite" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">通关状态：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="customsStatus" name="customsStatus" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">网名/昵称：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="customerName" name="customerName" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">发票抬头：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="invoiceTitle" name="invoiceTitle" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">发票内容：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="invoiceContent" name="invoiceContent" />
+                    </div>
+                </div>
+                 <div class="control-group span7">
+                    <label class="control-label">商品类型：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="goodsType" name="goodsType" />
+                    </div>
+                </div>
+                 <div class="control-group span7">
+                    <label class="control-label">商品等级 ：</label>
+                    <div class="controls">
+                        <select name="goodsLevel" id="goodsLevel">
+                    		<option value="1">一级</option>
+                    		<option value="2">二级</option>
+                    	</select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">清关口岸信息：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="customsPort" name="customsPort" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">出库单类型：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="billType" name="billType" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">订单金额 ：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="orderPrice" name="orderPrice" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">上游JSON报文：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="wlyInfo" name="wlyInfo" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">收货客户编号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="customerId" name="customerId" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">是否加急 ：</label>
+                    <div class="controls">
+                        <input type="radio" class="urgency" name="urgency" value="1" />是
+                        <input type="radio" class="urgency"  name="urgency" value="0" checked="checked" />否
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">客户门店编码：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="customerNo" name="customerNo" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">门店名称：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="storeName" name="storeName" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">发票标识 ：</label>
+                    <div class="controls">
+                    	<input type="text" name="invoiceState" id="invoiceState" value="" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">发票类型 ：</label>
+                    <div class="controls">
+                    	<input type="text" name="invoiceType" id="invoiceType" value="" />
+                    </div>
+                </div> 
+                <div class="control-group span7">
+                    <label class="control-label">发票号 ：</label>
+                    <div class="controls">
+                    	<input type="text" name="invoiceNo" id="invoiceNo" value="" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">购方税号 ：</label>
+                    <div class="controls">
+                    	<input type="text" name="invoiceTax" id="invoiceTax" value="" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">开户银行名称 ：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="bankName" name="bankName" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">开户银行账户：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="bankAccount" name="bankAccount" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">购货单位地址 ：</label>
+                    <div class="controls">
+                    	<input type="text" name="address" id="address " value="" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">购货单位电话 ：</label>
+                    <div class="controls">
+                    	<input type="text" name="phoneNumber" id="phoneNumber" value="" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">青龙业主号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="bdOwnerNo" name="bdOwnerNo" />
+                    </div>
+                </div>
+            </div>
+            <div class="span21 control-row-auto">
+                <div id="grid1"></div>
+            </div>
+        </form>
+    </div>
+    <!--出库单状态-->
+    <div id="content1" class="hide">
+    	<div class="control-group span7">
+            <!--<label class="control-label" style="text-align: center;">销售出库单状态</label>-->
+            <div id="queryOrderStatus" style="text-align: center;width: 250px;font-size: 16px;">
+            	已出库
+            </div>
+        </div>
+    </div>
+    <!--出库单取消-->
+    <div id="content2" class="hide">
+    	<div class="control-group span7">
+            <!--<label class="control-label" style="text-align: center;">出库单取消</label>-->
+            <div id="cancelOrder" style="text-align: center;">
+            	是否取消
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script src="../../javascripts/utils.js"></script>
+
+<script type="text/javascript">
+	BUI.use('bui/calendar',function(Calendar){
+            var datepicker = new Calendar.DatePicker({
+              trigger:'.calendar-time',
+              showTime:true,
+              autoRender : true
+            });
+        });
+        $('.calendar.calendar-time').change(function(){
+        	console.log(typeof( $(this).val()))
+        });
+
+        var store1 = null;
+
+    BUI.use(['common/search', 'common/page', 'bui/overlay', 'bui/grid'], function (Search, Page, Overlay, Grid) {
+
+        var innerColumns = [
+            {title: 'ISV出库单号', dataIndex: 'isvUUID', width: 120},
+            {title: '事业部商品编号', dataIndex: 'goodsNo', width: 120},
+            {title: '商品名称', dataIndex: 'goodsName', width: 120},
+            {title: '商品的出库数量', dataIndex: 'quantity ', width: 120},
+            {title: '规格型号', dataIndex: 'type', width: 120},
+            {title: '计量单位', dataIndex: 'unit', width: 120},
+            {title: '税率', dataIndex: 'rate', width: 120},
+            {title: '金额', dataIndex: 'amount', width: 120},
+            {title: '商品金额', dataIndex: 'price ', width: 120},
+            {title: '批属性(物流云专用)', dataIndex: 'pAttributes ', width: 120},
+            {title: '备注', dataIndex: 'remark', width: 120}
+        ];
+
+        // 实例化 Grid.Plugins.Cascade 插件
+        var cascade = new Grid.Plugins.Cascade({
+                renderer: function (record) {
+                    return '<div class="inner-grid"></div>';	//生成简单表格的容器
+                }
+            }),
+            //简单表格的配置信息
+            simpleGridConfig = {
+                autoRender: true,                 //自动生成
+                columns: innerColumns
+            };
+
+        cascade.on('expand', function (ev) {
+            var data = ev.record,
+                row = ev.row,
+                sgrid = $(row).data('sub-grid');
+            if (!sgrid) {
+                var container = $(row).find('.inner-grid'),
+                    gridConfig = BUI.cloneObject(simpleGridConfig);
+                gridConfig.render = container;
+
+                sgrid = new Grid.SimpleGrid(gridConfig);
+                sgrid.showData(data.records);
+                $(row).data('sub-grid', sgrid);
+            }
+        });
+
+        cascade.on('removed', function (ev) {
+            var data = ev.record,
+                row = ev.row,
+                sgrid = $(row).data('sub-grid');
+            if (sgrid) {
+                sgrid.destroy();
+            }
+        });
+
+
+        var columns = [
+            {title: 'isv出库单号 ', dataIndex: 'isvUUID', width: 120},
+            {title: 'ISV来源编号', dataIndex: 'isvSource', width: 100},
+            {title: '店铺编号', dataIndex: 'shopNo', width: 100},
+            {title: '事业部编号 ', dataIndex: 'departmentNo', width: 100},
+            {title: '销售平台来源', dataIndex: 'salePlatformSource ', width: 120},
+            {title: '收货人姓名 ', dataIndex: 'consigneeName', width: 100},
+            {title: '收货人地址', dataIndex: 'consigneeAddress', width: 100},
+
+            {title: '订单标记位', dataIndex: 'orderMark', width: 80},
+            {title: '商品编号', dataIndex: 'goodsNo', width: 80},
+            {title: '商品的出库数量', dataIndex: 'quantity', width: 80},
+            {title: '收货人手机 ', dataIndex: 'consigneeMobile ', width: 80},
+            {title: '出库单号 ', dataIndex: 'eclpSoNo', width: 80},
+            {
+				title: '操作', dataIndex: '', width: 200, renderer: function (value, obj) {
+					var detialStr = Search.createLink({
+						id : 'edit' + obj.id,
+						title : '销售出库单详情',
+						text : '打开编辑',
+						href : '../page/jd/queryOrder.html'
+					}),
+					editStr = '<span class="grid-command btn-edi" title="销售出库单状态查询">状态</span>',
+                    delStr = '<span class="grid-command btn-del" title="销售出库单明细查询">明细</span>';
+                    return detialStr + editStr + delStr;
+                }
+            }
+        ];
+
+        var store = Search.createStore("getSellOrderInfo", {
+            autoSync: true
+        });
+
+        var gridCfg = Search.createGridCfg(columns, {
+            tbar: {
+                items: [
+                    {
+                        text: '<i class="icon-check"></i>销售出库单下发',
+                        btnCls: 'button button-small',
+                        handler: addSellOrderInfo
+                    },
+                    {
+                        text: '<i class="icon-check"></i>销售出库单取消',
+                        btnCls: 'button button-small',
+                        handler: cancelSellOrderInfo
+                    }
+                ]
+            },
+            plugins: [BUI.Grid.Plugins.CheckSelection, cascade]
+        });
+
+        var search = new Search({
+            store: store,
+            gridCfg: gridCfg
+        });
+
+        var dialog = new Overlay.Dialog({
+            title: '销售出库单下发',
+            width: 900,
+            height: 700,
+            mask: true,
+            contentId: 'content',
+            success: function () {
+                var isvUUID = $('#isvUUID').val();
+                var isvSource = $('#isvSource').val();
+                var shopNo = $('#shopNo').val();
+                var departmentNo = $('#departmentNo').val();
+                var salePlatformSource = $('#salePlatformSource').val();
+                var consigneeName = $('#consigneeName').val();
+                var consigneeAddress = $('#consigneeAddress').val();
+                var orderMark = $('#orderMark').val();
+                var consigneeMobile = $('#consigneeMobile').val();
+                var consigneeAddress = $('#consigneeAddress').val();
+
+                if (isNull(isvUUID) ||
+                    isNull(isvSource) ||
+                    isNull(shopNo) ||
+                    isNull(departmentNo) ||
+                    isNull(salePlatformSource) ||
+                    isNull(consigneeAddress) ||
+                    isNull(orderMark) ||
+                    isNull(consigneeMobile) ||
+                    isNull(consigneeName)) {
+                    BUI.Message.Alert('加红*的为必填项!', 'info');
+                    return ;
+                }
+
+                if ($('#shopNo').val() == 1 && isNull($('#salesPlatformOrderNo').val())) {
+                    BUI.Message.Alert('销售平台订单号不能为空!', 'info');
+                    return ;
+                }
+
+                var formData = $("#J_Form").serialize();
+                var records = store1.getResult();
+
+                formData = formData + "&isvSource=" + $('#isvSource').val();
+                formData = formData + "&shopNo=" + $('#shopNo').val();
+
+                var postData = {
+                    base: formData,
+                    records: JSON.stringify(records)
+                }
+
+                saveSellOrderInfo(postData, function(data) {
+                    if (data.ErrorCode == 0) {
+                        BUI.Message.Alert('添加成功', 'info');
+                    } else {
+                        BUI.Message.Alert(data.data, 'info');
+                    }
+                })
+            }
+        });
+
+        var grid = search.get('grid');
+
+		//		监控操作部分的点击事件
+		grid.on('cellclick', function (ev) {
+            var sender = $(ev.domTarget); //点击的Dom
+            var record = ev.record;
+            if (sender.hasClass('btn-detial')) {
+                //查看详情
+                alert('查看详情');
+            } else if (sender.hasClass('btn-edi')) {
+            	//查看状态
+            	alert('销售出库单状态');
+            }
+        });
+
+
+//		采购入库单下发
+        function addSellOrderInfo() {
+            getDeptNo(function(data) {
+                if (data && data.length > 0) {
+                    var obj = document.getElementById("departmentNo");
+
+                    for(var i = 0; i < data.length; i++) {
+                        obj.options.add(new Option(data[i].deptNo, data[i].deptNo));
+                    }
+                }
+            });
+            getSpSource(function(data) {
+                if (data && data.rows.length > 0) {
+                    var obj = document.getElementById("salePlatformSource");
+
+                    for(var i = 0; i < data.rows.length; i++) {
+                        var cdata = data.rows[i];
+                        obj.options.add(new Option(cdata.spSourceName+"("+cdata.spSourceNo+")", cdata.spSourceNo));
+                    }
+                }
+            });
+            getISVsrc(function(data) {
+                if (data) {
+                    $('#isvSource').val(data.isv);
+                }
+            });
+
+            dialog.show();
+        }
+
+        //销售出库单取消
+        function cancelSellOrderInfo() {
+            var selections = grid.getSelection();
+
+            var ids = [];
+            BUI.each(selections,function(item){
+                ids.push(item.eclpSoNo);
+            });
+
+            if(ids.length){
+                BUI.Message.Confirm('确认要删除选中的记录么？',function(){
+                    ids = JSON.stringify(ids);
+                    sendJquery('/page/jd/cancelSellOrderInfo', {ids: ids}, 'POST', false, function(data) {
+                        if(data.ErroCode == 0){
+                            search.load();
+                        }else{
+                            BUI.Message.Alert('取消失败！');
+                        }
+                    });
+                },'question');
+            }
+        }
+        
+        
+		//查看采购入库单详情
+		function detialTranGoodsInfo() {
+            getDeptNo(function(data) {
+                if (data && data.length > 0) {
+                    var obj = document.getElementById("departmentNo");
+
+                    for(var i = 0; i < data.length; i++) {
+                        obj.options.add(new Option(data[i].deptNo, data[i].deptNo));
+                    }
+                }
+            });
+            getThirdCategoryNo(function(data) {
+                if (data && data.length > 0) {
+                    var obj = document.getElementById("goodsNo");
+
+                    for(var i = 0; i < data.length; i++) {
+                        obj.options.add(new Option(data[i].cname+"("+data[i].cnumber+")", data[i].cnumber));
+                    }
+                }
+            });
+
+            dialog.show();
+       	};
+       	
+       	
+//     	销售出库单状态查询
+		function queryOrderStatus(){
+			 alert('产看采购入库详情');
+			 $('#queryOrderStatus').text('需要展示的内容，是否出库')
+			dialog1.show();
+		}
+        function asyncTranGoodsInfo() {
+            BUI.Message.Message('暂不提供该功能', 'info');
+        }
+    });
+
+    BUI.use(['bui/grid', 'bui/data', 'bui/form'], function (Grid, Data, Form) {
+        getGoodsNo(function (data) {
+            if (data && data.length > 0) {
+                var enumnumber = {};
+
+                for (var i = 0; i < data.length; i++) {
+                    enumnumber[data[i].goodsNo] = data[i].goodsName + "-" + data[i].goodsNo;
+                }
+
+                //多列表格
+                var columns = [
+                        {
+                            title: '商品编号及名称',
+                            dataIndex: 'goodsNo',
+                            width: 300,
+                            editor: {id: 'mySelect1', xtype: 'select', items: enumnumber, rules: {required: true}},
+                            renderer: Grid.Format.enumRenderer(enumnumber)
+                        },
+                        {title: '出库数量 ', dataIndex: 'quantity', width: 90, editor: {xtype: 'number', rules: {required: true}}},
+                        {title: '规格型号', dataIndex: 'type', width: 100, editor: {xtype: 'text'}},
+                        {title: '计量单位', dataIndex: 'unit', width: 100, editor: {xtype: 'text'}},
+                        {title: '税率', dataIndex: 'rate', width: 100, editor: {xtype: 'text'}},
+                        {title: '金额', dataIndex: 'amount', width: 100, editor: {xtype: 'number'}},
+                        {title: '商品金额', dataIndex: 'price', width: 100, editor: {xtype: 'number'}},
+                        {title: '批属性', dataIndex: 'pAttributes', width: 150, editor: {xtype: 'text'}},
+                        {title: '备注', dataIndex: 'remark', width: 150, editor: {xtype: 'text'}}
+                    ];
+
+                    var data = [];
+
+                    store1 = new Data.Store({
+                        data: data
+                    });
+                    var editing = new Grid.Plugins.CellEditing(),
+                    grid1 = new Grid.Grid({
+                        render: '#grid1',
+                        columns: columns,
+                        width: 820,
+                        height: 300,
+                        forceFit: true,
+                        store: store1,
+                        plugins: [Grid.Plugins.CheckSelection, editing],
+                        tbar: {
+                            items: [{
+                                btnCls: 'button button-small',
+                                text: '<i class="icon-plus"></i>添加',
+                                listeners: {
+                                    'click': addFunction
+                                }
+                            },
+                                {
+                                    btnCls: 'button button-small',
+                                    text: '<i class="icon-remove"></i>删除',
+                                    listeners: {
+                                        'click': delFunction
+                                    }
+                                }]
+                        }
+
+                    });
+
+                grid1.render();
+                function addFunction() {
+                    var newData = {goodsNo: '请选择商品编号'};
+                    store1.add(newData);
+                    editing.edit(newData, 'goodsNo'); //添加记录后，直接编辑
+                }
+
+                function delFunction() {
+                    var selections = grid.getSelection();
+                    store1.remove(selections);
+                }
+
+                var form = new Form.HForm({
+                    srcNode: '#J_Form'
+                });
+                form.render();
+
+                form.on('beforesubmit', function () {
+                    if (!editing.isValid()) {
+                        return false;
+                    }
+                });
+            }
+        });
+    });
+
+    function getDeptNo(cb) {
+        sendJquery('/page/jd/getDeptNo', null, 'GET', false, function(data) {
+            cb(data);
+        })
+    }
+
+    function getGoodsNo(cb) {
+        sendJquery('/page/jd/getTranGoodsNo', null, 'GET', false, function (data) {
+            cb(data);
+        })
+    }
+
+    function getSpSource(cb) {
+        sendJquery('/page/jd/querySpSource', null, 'GET', false, function (data) {
+            cb(data);
+        })
+    }
+
+    function getISVsrc(cb) {
+        sendJquery('/page/jd/getISVsrc', null, 'GET', false, function (data) {
+            cb(data);
+        })
+    }
+
+    function saveSellOrderInfo(data, cb) {
+        sendJquery('/page/jd/saveSellOrderInfo', data, 'POST', false, function(ret) {
+            cb(ret);
+        })
+    }
+
+    $('#departmentNo').change(function() {
+        var deptNo = $(this).find('option:checked').val();
+        sendJquery('/page/jd/queryShop?deptNo='+deptNo, null, 'GET', false, function(ret) {
+            if (ret) {
+                var data = ret.rows;
+                if (data && data.length > 0) {
+                    $('#shopNo').val(data[0].shopNo);
+                    $('#shopNo').attr('title', data[0].shopName);
+                } else {
+                    $('#shopNo').val('');
+                }
+            }
+        });
+        sendJquery('/page/jd/queryWarehouse?deptNo='+deptNo, null, 'GET', false, function (ret) {
+            if (ret) {
+                var data = ret.rows;
+                if (data && data.length > 0) {
+                    $('#warehouseNo').val(data[0].warehouseNo);
+                    $('#warehouseNo').attr('title', data[0].warehouseName);
+                } else {
+                    $('#warehouseNo').val('');
+                }
+            }
+        })
+    });
+
+</script>
+</body>
+</html>

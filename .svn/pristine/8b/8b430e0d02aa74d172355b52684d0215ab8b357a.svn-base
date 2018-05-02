@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+
+    <link href="http://g.alicdn.com/bui/bui/1.1.21/css/bs3/dpl.css" rel="stylesheet">
+    <link href="http://g.alicdn.com/bui/bui/1.1.21/css/bs3/bui.css" rel="stylesheet">
+
+</head>
+<body>
+<div class="demo-content">
+    <div class="row">
+        <div class="span8">
+            <div id="J_Uploader">
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/jquery-1.8.1.min.js"></script>
+    <script src="../../assets/js/sea.js"></script>
+    <script src="../../assets/js/config.js"></script>
+
+    <!-- script start -->
+    <script type="text/javascript">
+        BUI.use('bui/uploader', function (Uploader) {
+
+            //添加自定义主题
+            Uploader.Theme.addTheme('imageView', {
+                elCls: 'imageViewTheme',
+                //可以设定该主题统一的上传路径
+                url: '../../../test/upload/upload.php',
+                queue: {
+                    //结果的模板，可以根据不同状态进进行设置
+                    resultTpl: {
+                        'default': '<div class="default">{name}</div>',
+                        'success': '<div class="success"><img src="../../../test/upload/{url}" /></div>',
+                        'error': '<div class="error"><span class="uploader-error">{msg}</span></div>',
+                        'progress': '<div class="progress"><div class="bar" style="width:{loadedPercent}%"></div></div>'
+                    }
+                }
+            });
+
+            var uploader = new Uploader.Uploader({
+                //指定使用主题
+                theme: 'imageView',
+                render: '#J_Uploader',
+                //不设时使用主题配置的上传路径
+                url: '../../../test/upload/upload.php'
+            }).render();
+        });
+    </script>
+    <!-- script end -->
+</div>
+</body>
+</html>

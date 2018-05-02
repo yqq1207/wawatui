@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>管理员列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        form h3{
+            margin: 20px 0 10px 0;
+        }
+
+        .table th, .table td{
+            line-height: 26px;
+        }
+
+        .bui-grid-cell-text .x-icon{
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <form id="searchForm" class="form-horizontal">
+        <div class="row">
+            <div class="control-group span8">
+                <label class="control-label">玩家ID：</label>
+                <div class="controls">
+                    <input type="text" name="userId" id="userId" data-rules="{number:true}"/>
+                </div>
+            </div>
+            <div class="control-group span8">
+                <label class="control-label">玩家昵称：</label>
+                <div class="controls">
+                    <input type="text" name="nickname" id="nickname" data-rules="{require:true}"/>
+                </div>
+            </div>
+            <div class="span3">
+                <button type="button" id="btnSearch" class="button button-primary">搜索</button>
+            </div>
+        </div>
+    </form>
+    <div id="content" class="hide demo-content">
+        <form id="J_Form" class="form-horizontal">
+            <h3>账号信息</h3>
+            <hr/>
+            <div class="control-group">
+                <label class="control-label"><s>*</s>账号：</label>
+                <div class="controls">
+                    <input type="text" class="input-middle" id="account" name="account" data-rules="{required :[true,'账号不能为空!']}">
+                    <button class="button button-small" id="checkAccountBtn">检测重复</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><s>*</s>姓名：</label>
+                <div class="controls">
+                    <input type="text" class="input-middle" name="userName" id="userName" data-rules="{required:[true,'姓名不能为空!']}">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><s>*</s>密码：</label>
+                <div class="controls">
+                    <input type="password" class="input-middle" name="password" id="password" data-rules="{required:[true,'密码不能为空!']}">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><s>*</s>确认密码：</label>
+                <div class="controls">
+                    <input type="password" class="input-middle" name="cPassword" id="cPassword" data-rules="{required:[true,'确认密码']}">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><s>*</s>手机号码：</label>
+                <div class="controls">
+                    <input type="text" class="input-middle" name="userPhone" id="userPhone" data-rules="{number:true,length:11}">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label"><s>*</s>验证码</label>
+                <div class="controls control-row1">
+                    <input name="validCode" type="text" id="text" data-cfg="{validEvent:'blur'}" data-rules="{required:true,regexp:[/^\d{6}$/,'验证码必须6位数字']}">
+                    <button class="button button-small" onclick="sendValidText()" type="button">发送验证码</button>
+                </div>
+            </div>
+
+            <div class="row actions-bar">
+                <div class="form-actions span8 offset3">
+                    <button class="button button-large button-warning" onclick="checkPwd();" type="button">确认并提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="search-grid-container">
+        <div id="grid"></div>
+    </div>
+</div>
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script src="../../javascripts/md5.js"></script>
+<script type="text/javascript">
+    var Form = BUI.Form;
+
+    new Form.Form({
+        srcNode : '#J_Form'
+    }).render();
+    var stortGlobal = null;
+
+    BUI.use(['common/search', 'common/page', 'bui/overlay'], function (Search, Page, Overlay) {
+        var columns = [
+                {title: '账号', dataIndex: 'account', width: 100},
+                {title: '姓名', dataIndex: 'userName', width: 100},
+                {title: '电话', dataIndex: 'userCellPhone', width: 100},
+                {title: '玩家角色', dataIndex: 'userRole', width: 100},
+                {title: '创建时间', dataIndex: 'regTime', width: 180},
+                {
+                    title: '操作', width: 400, renderer: function (value, obj) {
+                    var editStr = Search.createLink({
+                        id: 'edit_' + obj.orderStr,
+                        title: '编辑详细信息',
+                        text: '【编辑】',
+                        href: 'backstage/page/account/edit.html?userid=' + obj.userId
+                    });
+                    var editStr1 = '<span class="grid-command btn-del" title="删除">【删除】</span>';
+
+                    return editStr + editStr1;
+                }
+                }
+            ],
+            store = Search.createStore("getAllManager", {
+                autoSync: true
+            }),
+            gridCfg = Search.createGridCfg(columns, {
+                tbar: {
+                    items: [
+                        {text: '<i class="icon-add"></i>新增账号', btnCls: 'button button-small', handler: newAccount},
+                    ]
+                },
+                plugins: [BUI.Grid.Plugins.CheckSelection] // 插件形式引入多选表格
+            });
+        var search = new Search({
+                store: store,
+                gridCfg: gridCfg
+            }),
+            grid = search.get('grid');
+
+        stortGlobal = store;
+        grid.on('cellclick', function (ev) {
+            var sender = $(ev.domTarget); //点击的Dom
+            if (sender.hasClass('btn-del')) {
+                var record = ev.record;
+
+                if (isNull(record.account)) {
+                    BUI.Message.Alert("请选择要删除的记录", "warning");
+                    return;
+                };
+
+                var checkData = {
+                    account: record.account
+                };
+
+                BUI.Message.Confirm('确认要删除选中的记录么？', function () {
+                    sendJquery('/backstage/page/account/delAccount', checkData, 'POST', true, function (data) {
+                        if (data.ErrorCode == 0) {
+                            BUI.Message.Alert('删除成功', 'success');
+                            store.load();
+                            return ;
+                        }
+                        BUI.Message.Alert(data.msg, 'warning')
+                    });
+                }, 'question');
+            }
+        });
+        var dialog = new Overlay.Dialog({
+            title: '新增账号',
+            width: 550,
+            height: 440,
+            buttons: [],
+            contentId: 'content'
+        });
+
+        function newAccount() {
+            dialog.show();
+        }
+    });
+
+    function isNull(str) {
+        return !str || (typeof str == "undefined") || str == "";
+    }
+
+    $('#checkAccountBtn').click(function() {
+        var account = $('#account').val();
+
+        if (!account) {
+            return ;
+        }
+
+        var data = {
+            account: account
+        }
+
+        sendJquery('checkRepeat', data, 'POST', false, function(ret) {
+           if (ret.ErrorCode == 10015) {
+               BUI.Message.Alert('账号重复', 'warning');
+           } else {
+               BUI.Message.Alert('账号可用', 'info');
+           }
+        });
+    });
+
+    function sendValidText() {
+        return;
+    };
+
+    function checkPwd() {
+        var pwd = $('#password').val();
+        var cPwd = $('#cPassword').val();
+
+        pwd = hex_md5(pwd.trim());
+        cPwd = hex_md5(cPwd.trim());
+
+        if (pwd != cPwd) {
+            BUI.Message.Alert('两次密码不一致', 'error');
+            return ;
+        }
+        var account = $('#account').val();
+        var userName = $('#userName').val();
+        var userPhone = $('#userPhone').val();
+        var text = $('#text').val();
+
+        var data = {
+            account: account,
+            password: pwd,
+            cPassword: cPwd,
+            userName: userName,
+            userPhone: userPhone,
+            text: text
+        };
+
+        sendJquery('addManager', data, 'POST', false, function(ret) {
+            if (ret.ErrorCode == 0) {
+                BUI.Message.Alert('新增成功', 'info');
+                stortGlobal.load();
+            } else {
+                BUI.Message.Alert(ret.data, 'info');
+            }
+        });
+    };
+</script>
+
+<body>
+</html>

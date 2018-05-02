@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>已发货订单</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <script src="/javascripts/ajax.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <form id="searchForm" class="form-horizontal">
+        <div class="row">
+            <div class="control-group span12">
+                <label class="control-label">选择时间：</label>
+                <div class="controls">
+                    <input name="startDate" type="text" class="calendar calendar-time"><span> - </span>
+                    <input name="endDate" type="text" class="calendar calendar-time">
+                </div>
+            </div>
+            <div class="span3">
+                <button type="button" id="btnSearch" class="button button-primary">搜索</button>
+            </div>
+        </div>
+    </form>
+    <div class="search-grid-container">
+        <div id="grid"></div>
+    </div>
+</div>
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script type="text/javascript">
+    BUI.use(['common/search', 'common/page', 'bui/calendar'], function (Search, Page, Calendar) {
+        var enumObj = {"0": "未提取", "1": "配货中", "2": "已发货", "3": "发货中"},
+            columns = [
+                {title: '订单号', dataIndex: 'orderStr', width: 140},
+                {title: '用户ID', dataIndex: 'userId', width: 50},
+                {title: '姓名', dataIndex: 'userName', width: 70},
+                {title: '电话', dataIndex: 'userCellPhone', width: 90},
+                {title: '省份', dataIndex: 'userProvince', width: 80},
+                {title: '城市', dataIndex: 'userCity', width: 80},
+                {title: '详细地址', dataIndex: 'userAddress', width: 260},
+                {title: '下单时间', dataIndex: 'getTime', width: 120},
+                {title: '备注', dataIndex: 'remarks', width: 120},
+                {title: '状态', dataIndex: 'goodsType', width: 60, renderer: BUI.Grid.Format.enumRenderer(enumObj)},
+                {title: '快递公司', dataIndex: 'kdcompany', width: 80},
+                {title: '快递单号 ', dataIndex: 'delivery', width: 130},
+                {title: '发货时间', dataIndex: 'checktime', width: 120},
+                {
+                    title: '操作', width: 400, renderer: function (value, obj) {
+                        var editStr = Search.createLink({
+                                id: 'edit_' + obj.orderStr,
+                                title: '查看订单信息',
+                                text: '【查看】',
+                                href: 'page/order/edit.html?order=' + obj.orderStr + "&name=" + obj.userName + "&tel=" + obj.userCellPhone + "&delivery=" + obj.delivery + "&date=" + obj.getTime+"&optype=0"
+                            });
+                        return editStr;
+                    }
+                }
+            ],
+            store = Search.createStore("getOrderS", {
+                autoSync: true
+            }),
+            gridCfg = Search.createGridCfg(columns, {
+                tbar: {
+                    items: [
+                        /*{text: '<i class="icon-check"></i>批量确认', btnCls: 'button button-small', handler: moreSave}*/
+                    ]
+                },
+                plugins: [BUI.Grid.Plugins.CheckSelection] // 插件形式引入多选表格
+            });
+        var search = new Search({
+                store: store,
+                gridCfg: gridCfg
+            }),
+            grid = search.get('grid');
+
+        var datepicker = new Calendar.DatePicker({
+            trigger:'.calendar-time',
+            showTime:true,
+            autoRender : true
+        });
+        function moreSave() {
+            var selections = grid.getSelection();
+            saveSec(selections);
+        };
+
+        function saveSec(items) {
+            var checkData = {odata: []};
+            var flag = true;
+            BUI.each(items, function (item) {
+                if (isNull(item.delivery) || isNull(item.kdcompany)) {
+                    BUI.Message.Alert("选择了空快递单号记录", "warning");
+                    flag = false;
+                    return;
+                }
+                checkData.odata.push(JSON.stringify({
+                    orderStr: item.orderStr,
+                    delivery: item.delivery,
+                    kdcompany: item.kdcompany,
+                    type: 3
+                }));
+            });
+            if (!flag) {
+                return;
+            }
+            checkData.odata.push(JSON.stringify({seat: true}));     //占位，一条数据取字符串,>1条取实际对象
+            if (checkData.odata.length) {
+                BUI.Message.Confirm('确认要保存选中的记录么？', function () {
+                    sendJquery('/page/order/checkOrder', checkData, 'POST', true, function (data) {
+                        BUI.Message.Alert('保存成功', 'success');
+                        store.load();
+                    });
+                }, 'question');
+            }
+        };
+    });
+    function isNull(str) {
+        return !str || (typeof str == "undefined") || str == "";
+    }
+</script>
+
+<body>
+</html>

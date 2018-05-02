@@ -1,0 +1,216 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>邮件</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .line input {
+            height: 30px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body onload="load()">
+
+<div class="container">
+
+    <form id="searchForm" class="form-horizontal">
+        <div class="row">
+            <div class="control-group span8">
+                <label class="control-label">玩家ID:</label>
+                <div class="controls">
+                    <input type="text" name="userId" id="userId" data-rules="{number:true}"/>
+                </div>
+            </div>
+            <div class="control-group span8">
+                <label class="control-label"></label>
+                <div class="controls">
+                    <span id="userImg"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="control-group span16">
+                <label class="control-label">邮件标题:</label>
+                <div class="controls">
+                    <input type="text" name="mailTitle" id="title" data-rules="{required:true}"/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="control-group span16">
+                <label class="control-label">邮件内容:</label>
+                <div class="controls control-row-auto">
+                    <textarea name="mailContent" class="control-row4 input-large" id="content" data-rules="{required:true}"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row line">
+            <div class="control-group span16">
+                <label class="control-label">奖励Id:</label>
+                <div class="controls">
+                    <input type="text" name="mailRewars" id="rewards" value="" data-rules="{required:true}"/>
+                </div>
+            </div>
+        </div>
+        <div class="row line">
+            <div class="control-group span16">
+                <label class="control-label">奖励数量:</label>
+                <div class="controls">
+                    <input type="text" name="mailRewars" id="rewardsCount" value="" data-rules="{required:true}"/>
+                </div>
+            </div>
+        </div>
+        <div class="row line">
+            <div class="control-group span16">
+                <label class="control-label">可选奖励Id:</label>
+                <div class="controls">
+                    <input type="text" name="chooseRewards" id="chooseRewards" value="" data-rules="{required:true}"/>
+                </div>
+            </div>
+        </div>
+        <div class="row line">
+            <div class="control-group span16">
+                <label class="control-label">可选奖励数量:</label>
+                <div class="controls">
+                    <input type="text" name="chooseRewardsCount" id="chooseRewardsCount" value="" data-rules="{required:true}"/>
+                </div>
+            </div>
+        </div>
+        <div class="row line">
+            <div class="control-group span16">
+                <label class="control-label">发件人:</label>
+                <div class="controls">
+                    <input type="text" name="sender" id="sender" value="系统邮件" readonly="readonly"/>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <div class="control-group span12 offset2">
+            <label class="control-label"></label>
+            <div class="controls">
+                <button type="submit" onclick="sendMail();" class="button button-primary">发送邮件</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="control-group span12 offset2">
+            <label class="control-label"></label>
+            <div class="controls">
+               <span>奖励Id之间用逗号(英式)隔开,奖励数量同理,不可加入空格。\n固定奖励最大为3个，可选奖励最大个数为4个</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="search-grid-container">
+        <div id="grid"></div>
+    </div>
+</div>
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="/javascripts/ajax.js"></script>
+
+<script type="text/javascript">
+    function load() {
+        getRewards(function(data) {
+            if (data) {
+                document.getElementById("nickname").value = data['rows'][0].nickname;
+                document.getElementById("userImg").innerHTML = '<img src="' + data['rows'][0].avatarId + '" style="border:medium double black;width:96px; height:96px;"/>';
+                document.getElementById("gold").value = data['rows'][0].gold;
+            }
+        });
+
+    }
+    function getRewards() {
+        sendJquery('/page/mail/getRewards', null, 'get', true, function (res) {
+            if( !res ){
+                BUI.Message.Alert('获取奖励信息失败' + err, 'error');
+                return ;
+            }
+            for (var id in res) {
+                $('#rewards').append('<option value="' + id + '">' + res[id] + '</option>');
+                $('#chooseRewards').append('<option value="' + id + '">' + res[id] + '</option>');
+            }
+        });
+    };
+
+    /*
+     * 将奖励Id,奖励数量 以 {  goodsId : xxx, goodsCount : count  } 的形式放到 rewardArr中
+     */
+    function  rewardData ( rewardArr, rewardIds, rewardCounts ) {
+        if( !rewardIds || rewardIds == "" || !rewardCounts || rewardCounts == "" ){
+            return;
+        }
+        var rewardsTemp      = rewardIds.split(",");
+        var rewardsCountTemp = rewardCounts.split(",");
+        if( rewardsTemp.length != rewardsCountTemp.length ){
+            BUI.Message.Alert('奖励id与奖励数量长度不一样，发送取消。', 'error');
+            return;
+        }
+        for( var i = 0; i < rewardsTemp.length; ++i ){
+            var obj =  {
+                "goodsId"    : "PT0119",
+                "goodsCount" : 0
+            };
+            obj["goodsId"]    = rewardsTemp[i];
+            obj["goodsCount"] = parseInt(rewardsCountTemp[i]);
+            rewardArr.push( obj );
+        }
+    }
+    
+    function sendMail() {
+        var keyArr = ["userId","title","content","sender"];
+        var params = {};
+        for( var i = 0; i < keyArr.length; ++i ){
+            var value = document.getElementById(keyArr[i]).value;
+            if( isNull( value ) ){
+                BUI.Message.Alert('参数有误', keyArr[i]);
+                return;
+            }
+            params[ keyArr[i] ] = value;
+        }
+
+        params["rewards"]       = [];
+        params["chooseRewards"] = [];
+        var rewards             = document.getElementById("rewards").value;
+        var rewardsCount        = document.getElementById("rewardsCount").value;
+        var chooseRewards       = document.getElementById("chooseRewards").value;
+        var chooseRewardsCount  = document.getElementById("chooseRewardsCount").value;
+        rewardData(params["rewards"],rewards,rewardsCount);
+        rewardData(params["chooseRewards"],chooseRewards,chooseRewardsCount);
+        if( params["rewards"].length > 0 ){
+            params["rewards"] = JSON.stringify( params["rewards"] );
+        }
+        if( params["chooseRewards"].length > 0 ){
+            params["chooseRewards"] = JSON.stringify( params["chooseRewards"] );
+        }
+
+
+        //todo:管理员身份确认
+
+        BUI.Message.Confirm('确认操作？', function () {
+            sendJquery('/page/mail/addMailToUser', params, 'POST', true, function (err,res) {
+                if( err ){
+                    BUI.Message.Alert('邮件发送失败', 'error');
+                    return ;
+                }
+
+                BUI.Message.Alert('邮件发送完成', 'success');
+            });
+        }, 'question');
+
+
+        //BUI.Message.Alert('参数有误', 'warning');
+    }
+    function isNull(str) {
+        return (typeof str == "undefined") || str == "";
+    }
+</script>
+<body>
+</html>

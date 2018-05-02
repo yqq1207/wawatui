@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>订单审核</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+
+<div class="container">
+    <form id="searchForm" class="form-horizontal">
+        <div class="row">
+            <div class="control-group span12">
+                <label class="control-label">选择时间：</label>
+                <div class="controls">
+                    <input name="startDate" id="startDate" type="text" class="calendar"><span> - </span>
+                    <input name="endDate" id="endDate" type="text" class="calendar">
+                </div>
+            </div>
+            <div class="span3">
+                <button type="button" id="btnSearch" class="button button-primary">搜索</button>
+            </div>
+        </div>
+    </form>
+    <div class="search-grid-container">
+        <div id="grid"></div>
+    </div>
+</div>
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="/javascripts/ajax.js"></script>
+<script type="text/javascript">
+    BUI.use(['common/search', 'common/page'], function (Search, Page) {
+        var columns = [
+                {title: '日期', dataIndex: 'date', width: 80},
+                {title: '', dataIndex: '', width: 1},
+                {
+                    title: '内部总订单', dataIndex: 'totalOrder', width: 80, renderer: function (value, obj) {
+                    return '<strong style="color: midnightblue;bold:">' + value + '</strong>'
+                }
+                },
+                {
+                    title: '配货中', dataIndex: 'phOrder', width: 50, renderer: function (value, obj) {
+                    return '<strong style="color: midnightblue;">' + value + '</strong>'
+                }
+                },
+                {
+                    title: '发货中', dataIndex: 'fhOrder', width: 50, renderer: function (value, obj) {
+                    return '<strong style="color: midnightblue;">' + value + '</strong>'
+                }
+                },
+                {
+                    title: '已发货', dataIndex: 'yfhOrder', width: 50, renderer: function (value, obj) {
+                    return '<strong style="color: midnightblue;">' + value + '</strong>'
+                }
+                },
+                {title: '', dataIndex: '', width: 1},
+                {
+                    title: '手机总订单', dataIndex: 'totalOrderByPhone', width: 80, renderer: function (value, obj) {
+                    return '<strong style="color: green;">' + value + '</strong>'
+                }
+                },
+                {
+                    title: '配货中', dataIndex: 'phOrderByPhone', width: 50, renderer: function (value, obj) {
+                    return '<strong style="color: green;">' + value + '</strong>'
+                }
+                },
+                {
+                    title: '发货中', dataIndex: 'fhOrderByPhone', width: 50, renderer: function (value, obj) {
+                    return '<strong style="color: green;">' + value + '</strong>'
+                }
+                },
+                {
+                    title: '已发货', dataIndex: 'yfhOrderByPhone', width: 50, renderer: function (value, obj) {
+                    return '<strong style="color: green;">' + value + '</strong>'
+                }
+                },
+                {title: '', dataIndex: '', width: 1},
+                {
+                    title: '总娃娃', dataIndex: 'totalPet', width: 50, renderer: function (value, obj) {
+                    return '<strong style="color: saddlebrown;">' + value + '</strong>'
+                }
+                },
+                {
+                    title: '配货中', dataIndex: 'phPet', width: 50, renderer: function (value, obj) {
+                    return '<strong style="color: saddlebrown;">' + value + '</strong>'
+                }
+                },
+                {
+                    title: '发货中', dataIndex: 'fhPet', width: 50, renderer: function (value, obj) {
+                    return '<strong style="color: saddlebrown;">' + value + '</strong>'
+                }
+                },
+                {
+                    title: '已发货', dataIndex: 'yfhPet', width: 50, renderer: function (value, obj) {
+                    return '<strong style="color: saddlebrown;">' + value + '</strong>'
+                }
+                },
+                {title: '', dataIndex: '', width: 1},
+            ],
+            store = Search.createStore("getReviewOrder", {
+                autoSync: true,
+                autoLoad: true
+            }),
+            gridCfg = Search.createGridCfg(columns, {
+                tbar: {
+                    items: [
+                        {text: '<i class="icon-check"></i>导出结果', btnCls: 'button button-small', handler: exportRet}
+                    ]
+                },
+                plugins: [BUI.Grid.Plugins.CheckSelection]
+            });
+
+        function exportRet() {
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+
+            if (isNull(startDate) || isNull(endDate)) {
+                BUI.Message.Alert('请选择导出时间', 'warning');
+                return;
+            }
+            if (endDate < startDate) {
+                BUI.Message.Alert('时间选择不正确', 'warning');
+                return;
+            }
+
+            sendJquery('/page/order/exportCheckOrder?sdate=' + startDate + "&edate=" + endDate, null, 'GET', true, function (data) {
+                if (data.ErrorCode == 0) {
+                    downloadFile(data.data);
+                    BUI.Message.Alert('导出成功', 'success');
+                } else {
+                    BUI.Message.Alert('导出失败', 'info');
+                }
+            });
+        }
+
+        var search = new Search({
+                store: store,
+                gridCfg: gridCfg,
+                emptyDataTpl: '<div class="centered"><img alt="Crying" src="images/emptydata.png"><h2>查询的数据不存在</h2></div>',
+            }),
+            grid = search.get('grid');
+
+    });
+
+    function isNull(str) {
+        return !str || (typeof str == "undefined") || str == "";
+    }
+
+    function downloadFile(url) {
+        try {
+            var elemIF = document.createElement("iframe");
+            elemIF.src = url;
+            elemIF.style.display = "none";
+            document.body.appendChild(elemIF);
+        } catch (e) {
+            BUI.Message.Alert('下载失败', 'info');
+        }
+    }
+</script>
+
+<body>
+</html>

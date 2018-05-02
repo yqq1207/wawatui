@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>事业部列表</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+
+    <div class="search-grid-container">
+        <div id="grid"></div>
+    </div>
+    <script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+    <script type="text/javascript" src="../../assets/js/config-min.js"></script>
+    <script src="../../javascripts/ajax.js"></script>
+    <script type="text/javascript">
+        BUI.use(['common/search'], function (Search) {
+            var columns = [
+                    {title: '事业部名称', dataIndex: 'deptName', width: 140},
+                    {title: '事业部编号', dataIndex: 'deptNo', width: 80},
+                    {title: '结算模式', dataIndex: 'settlementMode', width: 80},
+                    {title: 'resultsSection', dataIndex: 'resultsSection', width: 80},
+                    {title: '激活模板', dataIndex: 'enableTemplate', width: 80},
+                    {title: '状态', dataIndex: 'status', width: 80},
+                    {title: '传真', dataIndex: 'managerFax', width: 80},
+                    {title: '管理员', dataIndex: 'managerName', width: 80},
+                    {title: 'settlementBody', dataIndex: 'settlementBody', width: 80},
+                    {title: 'accountData', dataIndex: 'accountData', width: 80},
+                    {title: '销售方', dataIndex: 'sellerName', width: 80},
+                    {title: 'qualification', dataIndex: 'qualification', width: 80},
+                    {title: 'Email', dataIndex: 'managerEmail', width: 80},
+                    {title: 'billingConditions', dataIndex: 'billingConditions', width: 80},
+                    {title: '电话', dataIndex: 'managerPhone', width: 80},
+                    {title: '地址', dataIndex: 'managerAddress', width: 80},
+                    {title: '销售方编号', dataIndex: 'sellerNo', width: 80}
+                ],
+                store = Search.createStore("queryDept", {
+                    autoSync: true
+                }),
+                gridCfg = Search.createGridCfg(columns, {
+                    tbar: {
+                        items: [
+                           /* {text: '<i class="icon-check"></i>批量标记', btnCls: 'button button-small', handler: moreSave},*/
+                        ]
+                    },
+                    plugins: [BUI.Grid.Plugins.CheckSelection] // 插件形式引入多选表格
+                });
+
+            var search = new Search({
+                    store: store,
+                    gridCfg: gridCfg
+                }),
+                grid = search.get('grid');
+        });
+
+    </script>
+
+    <body>
+</html>

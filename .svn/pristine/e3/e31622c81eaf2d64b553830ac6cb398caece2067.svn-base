@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>订单列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+</head>
+<body onload="load()">
+
+<div class="container">
+
+    <form id="searchForm" class="form-horizontal">
+        <div class="row">
+            <div class="control-group span8">
+                <label class="control-label">订单编号：</label>
+                <div class="controls">
+                    <span id="showOrder"></span>
+                    <input type="hidden" name="orderStr" id="orderStr" value=""/>
+                </div>
+            </div>
+            <div class="control-group span8">
+                <label class="control-label">玩家姓名：</label>
+                <div class="controls">
+                    <span id="name">HelloWorld</span>
+                </div>
+            </div>
+            <div class="control-group span8">
+                <label class="control-label">玩家电话：</label>
+                <div class="controls">
+                    <span id="tel"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="control-group span8">
+                <label class="control-label">快递单号：</label>
+                <div class="controls">
+                    <!--<span id="delivery"></span>-->
+                    <input type="text" id="delivery" class="control-text" />
+                </div>
+            </div>
+            <div class="control-group span8">
+                <label class="control-label">订单日期：</label>
+                <div class="controls">
+                    <span id="date"></span>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div id="save" class="row form-horizontal hide">
+        <div class="control-group span8">
+            <label class="control-label"></label>
+            <div class="controls">
+                <button type="button" onclick="sendTemp();" class="button button-primary">保存</button>
+            </div>
+        </div>
+    </div>
+    <div class="search-grid-container">
+        <div id="grid"></div>
+    </div>
+</div>
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script type="text/javascript">
+    function load() {
+        //?order=xx&name=xx&tel=xx
+        var thisURL = document.URL;
+        var getVal = thisURL.split('?')[1];
+
+        getVal = getVal.split('&');
+
+        var order = getVal[0].split("=")[1];
+        var name = getVal[1].split("=")[1];
+        var tel = getVal[2].split("=")[1];
+        var delivery = getVal[3].split("=")[1];
+        var date = getVal[4].split("=")[1];
+        var operType = getVal[5].split("=")[1];
+
+        document.getElementById("showOrder").innerHTML = order;
+        document.getElementById("name").innerHTML = decodeURI(name);
+        document.getElementById("tel").innerHTML = tel;
+        document.getElementById("delivery").value = delivery;
+        document.getElementById("date").innerHTML = decodeURI(date);
+
+        if (delivery) {
+            $('#aCheck').show();
+            $('#btnSearch').hide();
+        } else {
+            $('#aCheck').hide();
+            $('#btnSearch').show();
+        }
+
+        $('#orderStr').val(order);
+
+        if ($('#orderStr').val(order)) {
+            showGird();
+        }
+    }
+
+    function showGird() {
+        BUI.use(['common/search', 'common/page'], function (Search) {
+            var columns = [
+                    {title: '玩偶ID', dataIndex: 'goodsId', width: 70},
+                    {title: '玩偶数量', dataIndex: 'goodsCount', width: 80},
+                    {title: '玩偶名称', dataIndex: 'goodsName', width: 120},
+                    {
+                        title: '玩偶图片', dataIndex: 'goodsImg', width: 200, renderer: function (value, obj) {
+                        return '<img src="' + value + '" />';
+                    }
+                    },
+                    {title: ''}
+                ],
+                store = Search.createStore("getOrderGoods"),
+                gridCfg = Search.createGridCfg(columns, {
+                    tbar: {
+                        items: []
+                    },
+                    plugins: [BUI.Grid.Plugins.CheckSelection] // 插件形式引入多选表格
+                });
+
+            var search = new Search({
+                    store: store,
+                    gridCfg: gridCfg
+                }),
+                grid = search.get('grid');
+        });
+    }
+
+    function checkOrder() {
+
+        BUI.Message.Confirm('确认操作？', function () {
+            $.ajax({
+                url: '../data/del.php',
+                dataType: 'json',
+                data: {ids: ids},
+                success: function (data) {
+                    if (data.success) {
+                        search.load();
+                    } else { //删除失败
+                        BUI.Message.Alert('删除失败！');
+                    }
+                }
+            });
+        }, 'question');
+    }
+</script>
+<body>
+</html>

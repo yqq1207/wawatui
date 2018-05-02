@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>已取消销售出库单</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+<div class="search-grid-container">
+    <div id="grid"></div>
+</div>
+
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script src="../../javascripts/utils.js"></script>
+
+<script type="text/javascript">
+    BUI.use(['common/search', 'common/page', 'bui/overlay', 'bui/grid'], function (Search, Page, Overlay, Grid) {
+
+        var innerColumns = [
+            {title: 'ISV出库单号', dataIndex: 'isvUUID', width: 120},
+            {title: '事业部商品编号', dataIndex: 'goodsNo', width: 120},
+            {title: '商品名称', dataIndex: 'goodsName', width: 120},
+            {title: '商品的出库数量', dataIndex: 'quantity ', width: 120},
+            {title: '规格型号', dataIndex: 'type', width: 120},
+            {title: '计量单位', dataIndex: 'unit', width: 120},
+            {title: '税率', dataIndex: 'rate', width: 120},
+            {title: '金额', dataIndex: 'amount', width: 120},
+            {title: '商品金额', dataIndex: 'price ', width: 120},
+            {title: '批属性(物流云专用)', dataIndex: 'pAttributes ', width: 120},
+            {title: '备注', dataIndex: 'remark', width: 120}
+        ];
+
+        // 实例化 Grid.Plugins.Cascade 插件
+        var cascade = new Grid.Plugins.Cascade({
+                renderer: function (record) {
+                    return '<div class="inner-grid"></div>';	//生成简单表格的容器
+                }
+            }),
+            //简单表格的配置信息
+            simpleGridConfig = {
+                autoRender: true,                 //自动生成
+                columns: innerColumns
+            };
+
+        cascade.on('expand', function (ev) {
+            var data = ev.record,
+                row = ev.row,
+                sgrid = $(row).data('sub-grid');
+            if (!sgrid) {
+                var container = $(row).find('.inner-grid'),
+                    gridConfig = BUI.cloneObject(simpleGridConfig);
+                gridConfig.render = container;
+
+                sgrid = new Grid.SimpleGrid(gridConfig);
+                sgrid.showData(data.records);
+                $(row).data('sub-grid', sgrid);
+            }
+        });
+
+        cascade.on('removed', function (ev) {
+            var data = ev.record,
+                row = ev.row,
+                sgrid = $(row).data('sub-grid');
+            if (sgrid) {
+                sgrid.destroy();
+            }
+        });
+
+
+        var columns = [
+            {title: 'isv出库单号 ', dataIndex: 'isvUUID', width: 120},
+            {title: 'ISV来源编号', dataIndex: 'isvSource', width: 100},
+            {title: '店铺编号', dataIndex: 'shopNo', width: 100},
+            {title: '事业部编号 ', dataIndex: 'departmentNo', width: 100},
+            {title: '销售平台来源', dataIndex: 'salePlatformSource ', width: 120},
+            {title: '收货人姓名 ', dataIndex: 'consigneeName', width: 100},
+            {title: '收货人地址', dataIndex: 'consigneeAddress', width: 100},
+
+            {title: '订单标记位', dataIndex: 'orderMark', width: 80},
+            {title: '商品编号', dataIndex: 'goodsNo', width: 80},
+            {title: '商品的出库数量', dataIndex: 'quantity', width: 80},
+            {title: '收货人手机 ', dataIndex: 'consigneeMobile ', width: 80},
+            {title: '出库单号 ', dataIndex: 'eclpSoNo', width: 80},
+            {
+				title: '操作', dataIndex: '', width: 200, renderer: function (value, obj) {
+					var detialStr = Search.createLink({
+						id : 'edit' + obj.id,
+						title : '销售出库单详情',
+						text : '打开编辑',
+						href : './queryOrder.html'
+					}),
+					editStr = '<span class="grid-command btn-edi" title="修改学生信息">状态</span>',
+                    delStr = '<span class="grid-command btn-del" title="删除学生信息">取消</span>';//页面操作不需要使用Search.createLink
+                    return detialStr + editStr + delStr;
+                }
+            }
+        ];
+
+        var store = Search.createStore("getcSellOrderInfo", {
+            autoSync: true
+        });
+
+        var gridCfg = Search.createGridCfg(columns, {
+            tbar: {
+                items: []
+            },
+            plugins: [BUI.Grid.Plugins.CheckSelection, cascade]
+        });
+
+        var search = new Search({
+            store: store,
+            gridCfg: gridCfg
+        });
+
+        var grid = search.get('grid');
+
+		//		监控操作部分的点击事件
+		grid.on('cellclick', function (ev) {
+            var sender = $(ev.domTarget); //点击的Dom
+            var record = ev.record;
+            if (sender.hasClass('btn-detial')) {
+                //查看详情
+                alert('查看详情');
+            } else if (sender.hasClass('btn-edi')) {
+            	//查看状态
+            	alert('销售出库单状态');
+            }
+        });
+    });
+</script>
+</body>
+</html>

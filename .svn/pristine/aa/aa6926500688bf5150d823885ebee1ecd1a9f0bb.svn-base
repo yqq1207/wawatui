@@ -1,0 +1,16 @@
+{
+	"config" : {
+        "host": "116.62.43.226",
+        "port": 27017,
+        "db": "zb_game"
+    },
+	"options" : {
+        "user" : "zb_game",
+        "pass" : "&fe0tQA7Gt",
+        "server": {
+            "auto_reconnect": true,
+            "poolSize": 10
+        },
+        "useMongoClient" :true
+    }
+}

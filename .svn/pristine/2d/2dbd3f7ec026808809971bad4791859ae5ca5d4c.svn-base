@@ -1,0 +1,513 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>主商品详情信息</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        #content {
+            margin-left: 20px;
+            margin-top: 20px;
+            padding: 20px;
+            padding-bottom:0px;
+            width:70%;
+            border: 1px solid silver;
+        }
+    </style>
+</head>
+<body onload="load()">
+<div id="content">
+    <fieldset>
+        <legend>主商品信息</legend>
+        <form id="J_Form" class="form-horizontal">
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>ISV主商品编码：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="isvGoodsNo" name="isvGoodsNo" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>商品条码：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" name="barcodes" id="barcodes" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>商品名称：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="goodsName" name="goodsName" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>三级分类编码：</label>
+                    <div class="controls">
+                        <select name="thirdCategoryNo" id="thirdCategoryNo" ></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>事业部编码：</label>
+                    <div class="controls">
+                        <select id="deptNo" name="deptNo" ></select>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">商品简称：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="abbreviation" name="abbreviation" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">销售平台商品编码：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="spGoodsNo" name="spGoodsNo" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">品牌名称：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="brandName" name="brandName" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">生产厂商：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="manufacturer" name="manufacturer" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">产地：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="produceAddress" name="produceAddress" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">商品规格：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="standard" name="standard" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">商品颜色：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="color" name="color" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">商品尺码：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="size" name="size" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">商品件型：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="sizeDefinition" name="sizeDefinition" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">款号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="fashionNo" name="fashionNo" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">品牌编码：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="brandNo" name="brandNo" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">入库保质期阈值：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle number_2" id="instoreThreshold" name="instoreThreshold" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">出库保质期阈值：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle number_2" id="outstoreThreshold" name="outstoreThreshold" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">商品毛重：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle number_1" id="grossWeight" name="grossWeight" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">商品净重：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle number_1" id="netWeight" name="netWeight" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>保质期：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle number_2" id="safeDays" name="safeDays" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">宽：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle number_1" id="width" name="width" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">长：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle number_1" id="length" name="length" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">高：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle number_1" id="height" name="height" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">湿度控制：</label>
+                    <div class="controls">
+                        <input type="radio" class="humidity" name="humidity" value="1"/>是
+                        <input type="radio" class="humidity" name="humidity" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">湿度上限：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="humidityCeil" name="humidityCeil" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">湿度下限：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="humidityFloor" name="humidityFloor" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">事业部商品编码：</label>
+                    <div class="controls">
+                        <input type="input" class="input-middle" id="goodsNo" name="goodsNo" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">温度控制：</label>
+                    <div class="controls">
+                        <input type="radio" class="temperature" name="temperature" value="1" />是
+                        <input type="radio" class="temperature" name="temperature" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">温度上限：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="temperatureCeil" name="temperatureCeil" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">温度下限：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="temperatureFloor" name="temperatureFloor" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">低值易耗品：</label>
+                    <div class="controls">
+                        <input type="radio" class="cheapGift" name="cheapGift" value="1" />是
+                        <input type="radio" class="cheapGift" name="cheapGift" value="0" />否
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">质检品：</label>
+                    <div class="controls">
+                        <input type="radio" class="quality" name="quality" value="1" />是
+                        <input type="radio" class="quality" name="quality" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">高值：</label>
+                    <div class="controls">
+                        <input type="radio" class="expensive" name="expensive" value="1" />是
+                        <input type="radio" class="expensive" name="expensive" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">奢侈品：</label>
+                    <div class="controls">
+                        <input type="radio" class="luxury" name="luxury" value="1" />是
+                        <input type="radio" class="luxury" name="luxury" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">易碎品：</label>
+                    <div class="controls">
+                        <input type="radio" class="breakable" name="breakable" value="1" />是
+                        <input type="radio" class="breakable" name="breakable" value="0" />否
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">液体：</label>
+                    <div class="controls">
+                        <input type="radio" class="liquid" name="liquid" value="1" />是
+                        <input type="radio" class="liquid" name="liquid" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">耗材：</label>
+                    <div class="controls">
+                        <input type="radio" class="consumables" name="consumables" value="1" />是
+                        <input type="radio" class="consumables" name="consumables" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">异型：</label>
+                    <div class="controls">
+                        <input type="radio" class="abnormal" name="abnormal" value="1" />是
+                        <input type="radio" class="abnormal" name="abnormal" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">进口商品：</label>
+                    <div class="controls">
+                        <input type="radio" class="imported" name="imported" value="1" />是
+                        <input type="radio" class="imported" name="imported" value="0" />否
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">保健品：</label>
+                    <div class="controls">
+                        <input type="radio" class="health" name="health" value="1" />是
+                        <input type="radio" class="health" name="health" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">不可移动：</label>
+                    <div class="controls">
+                        <input type="radio" class="movable" name="movable" value="1" />是
+                        <input type="radio" class="movable" name="movable" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">3G资费：</label>
+                    <div class="controls">
+                        <input type="radio" class="service3g" name="service3g" value="1" />是
+                        <input type="radio" class="service3g" name="service3g" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">检验样品：</label>
+                    <div class="controls">
+                        <input type="radio" class="sample" name="sample" value="1" />是
+                        <input type="radio" class="sample" name="sample" value="0" />否
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">串味品：</label>
+                    <div class="controls">
+                        <input type="radio" class="odor" name="odor" value="1" />是
+                        <input type="radio" class="odor" name="odor" value="0"  />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">成人用品：</label>
+                    <div class="controls">
+                        <input type="radio" class="sex" name="sex" value="1" />是
+                        <input type="radio" class="sex" name="sex" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">可混批次存放：</label>
+                    <div class="controls">
+                        <input type="radio" class="precious" name="precious" value="1" />是
+                        <input type="radio" class="precious" name="precious" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">贵品：</label>
+                    <div class="controls">
+                        <input type="radio" class="mixedBatch" name="mixedBatch" value="1" />是
+                        <input type="radio" class="mixedBatch" name="mixedBatch" value="0" />否
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label radio">序列号管理：</label>
+                    <div class="controls">
+                        <input type="radio" class="serial" name="serial" value="1" />是
+                        <input type="radio" class="serial" name="serial" value="0" />否
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label radio">批次管理：</label>
+                    <div class="controls">
+                        <input type="radio" class="batch" name="batch" value="1"/>是
+                        <input type="radio" class="batch" name="batch" value="0" />否
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row actions-bar">
+            <div class="form-actions span13 offset3">
+                <button type="button" class="button button-primary" onclick="enableEdit()">编辑</button>
+                <button type="button" class="button button-primary" onclick="editGoodsInfo()">保存</button>
+            </div>
+        </div>
+    </fieldset>
+</div>
+<body>
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script src="../../javascripts/utils.js"></script>
+<script type="text/javascript">
+    BUI.use('bui/form', function (Form) {
+
+        new Form.Form({
+            srcNode: '#J_Form'
+        }).render();
+    });
+
+
+    function load() {
+        var thisURL = document.URL;
+        var getVal = thisURL.split('?')[1];
+        var id = getVal.split("=")[1];
+
+        if (id) {
+            getGoodsInfo(id, function(data) {
+                if (data) {
+                    setData(data);
+                }
+            });
+        }
+
+        setDisabled(true);
+    }
+
+    function getGoodsInfo(id, cb) {
+        sendJquery('/page/jd/getSinTranGoodsInfo?id='+id, null, 'GET', false, function(data) {
+            cb && cb(data);
+        })
+    }
+
+    function setData(data) {
+        setInput("isvGoodsNo", data.isvGoodsNo);
+        setInput("barcodes", data.barcodes);
+        setInput("goodsName", data.goodsName);
+        setInput("abbreviation", data.abbreviation);
+        setInput("spGoodsNo", data.spGoodsNo);
+        setInput("brandName", data.brandName);
+        setInput("manufacturer", data.manufacturer);
+        setInput("produceAddress", data.produceAddress);
+        setInput("standard", data.standard);
+        setInput("color", data.color);
+        setInput("size", data.size);
+        setInput("sizeDefinition", data.sizeDefinition);
+        setInput("brandNo", data.brandNo);
+        setInput("instoreThreshold", data.instoreThreshold);
+        setInput("outstoreThreshold", data.outstoreThreshold);
+        setInput("grossWeight", data.grossWeight);
+        setInput("netWeight", data.netWeight);
+        setInput("safeDays", data.safeDays);
+        setInput("width", data.width);
+        setInput("length", data.length);
+        setInput("height", data.height);
+        setInput("humidityCeil", data.humidityCeil);
+        setInput("humidityFloor", data.humidityFloor);
+        setInput("temperatureCeil", data.temperatureCeil);
+        setInput("temperatureFloor", data.temperatureFloor);
+        setInput("goodsNo", data.goodsNo);
+
+        setRadio("batch", data.batch);
+        setRadio("humidity", data.humidity);
+        setRadio("cheapGift", data.cheapGift);
+        setRadio("temperature", data.temperature);
+        setRadio("quality", data.quality);
+        setRadio("expensive", data.expensive);
+        setRadio("luxury", data.luxury);
+        setRadio("breakable", data.breakable);
+        setRadio("liquid", data.liquid);
+        setRadio("consumables", data.consumables);
+        setRadio("abnormal", data.abnormal);
+        setRadio("health", data.health);
+        setRadio("imported", data.imported);
+        setRadio("movable", data.movable);
+        setRadio("service3g", data.service3g);
+        setRadio("sample", data.sample);
+        setRadio("odor", data.odor);
+        setRadio("sex", data.sex);
+        setRadio("precious", data.precious);
+        setRadio("mixedBatch", data.mixedBatch);
+        setRadio("serial", data.serial);
+
+        addOption("thirdCategoryNo", data.thirdCategoryNo, data.thirdCategoryNo);
+        addOption("deptNo", data.deptNo, data.deptNo);
+    }
+
+    function setRadio(name, value) {
+        var xradio = document.getElementsByName(name);
+        if(value == 1){
+            xradio[0].checked = true;
+        } else {
+            xradio[1].checked = true;
+        }
+    }
+
+    function setInput(id, value) {
+        document.getElementById(id).value = value;
+    }
+
+    function setDisabled(flag) {
+        var input = document.getElementsByTagName('input');
+
+        for(var i = 0; i < input.length; i++) {
+            input[i].disabled = flag;
+        }
+
+        var select = document.getElementsByTagName('select');
+
+        for(var i = 0; i < select.length; i++) {
+            select[i].disabled = flag;
+        }
+
+        var radio = document.getElementsByTagName('radio');
+
+        for(var i = 0; i < radio.length; i++) {
+            radio[i].disabled = flag;
+        }
+
+    }
+
+    function enableEdit() {
+        BUI.Message.Alert('暂不提供编辑功能', 'info');
+    }
+
+    function editGoodsInfo() {
+        BUI.Message.Alert('啥也没有,你能咋地', 'info');
+    }
+</script>
+</html>

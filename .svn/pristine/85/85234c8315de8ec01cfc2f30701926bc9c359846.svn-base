@@ -1,0 +1,552 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>机器列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <style>
+    	.form-horizontal .control-group{
+    		height:25px
+    	}
+    </style>
+</head>
+<body>
+
+<div class="container">
+	<div id="content" class="hide demo-content">
+        <form id="J_Form" class="form-horizontal">
+            <div class="control-group span10">
+                <label class="control-label">机器编号：</label> 
+                <div class="controls">
+                    <input name="mid" type="text" data-rules="{required:true}" disabled="disabled" />
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">机器名称：</label>
+                <div class="controls">
+                    <input name="mname" type="text" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">机器状态：</label>
+               <div class="controls">
+                    <select name="mstatus" id="mstatus">
+                        <option value="0">空闲</option>
+                        <option value="1">使用中</option>
+                        <option value="-1">下架</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">机器计时：</label>
+                <div class="controls">
+                   <input name="clock" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">是否初始化：</label>
+                <div class="controls">
+                    <select name="init" id="init">
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">娃娃数量：</label>
+                <div class="controls">
+                    <select name="gtype" id="msign">
+                    	<option value="0">7个点</option>
+                        <option value="1">5个点</option>
+                        <option value="3">3个点</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">概率计算类型：</label>
+                <div class="controls">
+                    <select name="mtype" id="msign">
+                        <option value="1">机器</option>
+                        <option value="2">娃娃</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">机器类型：</label>
+                <div class="controls">
+                    <select name="machinetype" id="msign">
+                        <option value="1">普通</option>
+                        <option value="2">红包</option>
+                        <option value="3">必中</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">红包机器开放金额：</label>
+                <div class="controls">
+                    <input name="openrpvalue" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">消耗金币：</label>
+                <div class="controls">
+                    <input name="useGold" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">人民币价格：</label>
+                <div class="controls">
+                    <input name="rmbprice" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+             <div class="control-group span10">
+                <label class="control-label">成本：</label>
+                <div class="controls">
+                    <input name="price" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">其它成本：</label>
+                <div class="controls">
+                    <input name="otherPrice" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">赢利：</label>
+                <div class="controls">
+                    <input name="getPrice" type="text" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">难度系数：</label>
+                <div class="controls">
+                    <input name="hardCft" type="text" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">必中修正值：</label>
+                <div class="controls">
+                    <input name="offset" type="text" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">场标签：</label>
+                <div class="controls">
+                    <select name="msign" id="msign">
+                    	<option value="0">福利</option>
+                        <option value="1">精品</option>
+                        <option value="2">套装</option>
+                        <option value="3">实用</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">图片：</label>
+                <div class="controls">
+                    <input name="mresource" type="text" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">标签：</label>
+                <div class="controls">
+                    <input name="flagUrl" type="text" class="control-text" data-rules="{required:true}"/>
+                </div>
+             </div>
+            <div class="control-group span10">
+                <label class="control-label">权重：</label>
+                <div class="controls">
+                    <input name="sortId" type="text" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+        </form>
+    </div>
+   	<div id="content1" class="hide">
+        <div class="row">
+            <div class="control-group span8">
+                <div class="controls">
+                    <label class="control-label"></label>
+                    <!--<form method="post" enctype="multipart/form-data" action="importOrder">-->
+                    <!--<input type="file" name="fileName" id="fileName" />
+                    <input type="hidden" name="importType" id="importType" />
+                    <input type="button" id="import" value="导入">
+                    <span id="progress" style="margin-left:10px;">0%</span>-->
+                    <!-- </form>-->
+                    <!--<form enctype="multipart/form-data" action="/page/machine/importOrder" method="post">-->
+                    <form enctype="multipart/form-data">
+					    <h4>上传学生信息excel:</h4>  
+					    <input type="file" name="fileName" id="fileName" multiple="multiple">  
+					    <button onclick="upload()">上传学生信息excel表</button>  
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="search-grid-container">
+        <div id="grid"></div>
+    </div>
+</div>
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script type="text/javascript" src="../../javascripts/ajax.js"></script>
+<script type="text/javascript">
+	var xslData = {
+        pid: '',
+        name: '',
+        size: '',
+        energy: '',
+        type: '',
+        newtype: '',
+        useGold: '',
+        rmbprice: '',
+        price: '',
+        otherPrice: '',
+        getPrice: '',
+        hardCft: '',
+        offset: '',
+        ptoysimg: '',
+        ppackageimg: '',
+        pshowimg: '',
+        pdetailsimg: '',
+    };
+
+	function upload(){
+		var file = document.querySelector('#fileName');
+	    var formData = new FormData();
+	    formData.append('fileName', file.files[0]);
+	
+		uploadFile('/page/machine/importOrder', formData, function(data){
+			console.log(data)
+//			 if (data.ErrorCode == 0) {
+			 if(data.readyState == 0){
+	            BUI.Message.Alert('成功', 'success');
+	            store.load();
+	        } else {
+	            BUI.Message.Alert('失败', 'info');
+	        }
+		})
+	}
+	var Form = BUI.Form;
+	var orderStore;
+
+    new Form.Form({
+        srcNode: '#J_Form'
+    }).render();
+	
+	
+	var motailTitle;
+	
+    BUI.use(['common/search', 'common/page','bui/overlay'], function (Search,Page, Overlay) {
+    	
+    	console.log(motailTitle)
+    	 var dialog = new Overlay.Dialog({
+            title: '新建',
+            width: 550,
+            height: 600,
+            mask: true, // 显示mask
+            zIndex: 1000, // 自定义zindex，比message的更小
+            maskShared: false, // 不共用mask
+            //配置文本
+            contentId: 'content',
+            success: function () {//修改的方法
+            	BUI.Message.Show({
+                    msg: '确认提交?',
+                    icon: 'question',
+                    buttons: [
+                        {
+                            text: 'yes',
+                            elCls: 'button button-primary',
+                            handler: function () {
+                                dialog.close();
+                                this.close();
+                                var inputList = $('#J_Form').find('input'),selectList = $('#J_Form').find('select');
+                                var inputNum = inputList.length,selectNum = selectList.length;
+                                var detial = new Object();
+                                
+                                for(var i = 0;i<inputNum;i++){
+                                	detial[inputList[i].name] = inputList[i].value;
+                                }
+                                for(var i = 0;i<selectNum;i++){
+                                	detial[selectList[i].name] = selectList.eq(i).find('option:selected').val();
+                                }
+                                console.log(detial);
+                                if (motailTitle == '新建') {
+                                    buildNewMachine(detial);
+                                } else if (motailTitle == '修改') {
+                                    updateMachine(detial)
+                                }
+
+                            }
+                        },
+                        {
+                            text: 'no',
+                            elCls: 'button',
+                            handler: function () {
+                                this.close();
+                            }
+                        }
+
+                    ]
+           })
+                    
+        	}
+    	});
+        var 
+        	enumObj = {"0": "空闲", "1": "使用中", "-1": "下架"},
+            gType = {"0": "7个点", "1": "5个点", "3": "3个点"},
+            mType = {"1": "机器", "2": "娃娃"},
+            machineType = {"1": "普通","2": "红包", "3": "必中"}
+            Msign = {"0": "福利", "1": "精品","2": "套装", "3": "实用"},
+            columns = [
+                {title: '机器编号', dataIndex: 'id', width: 60, renderer: function (v) {
+                    return Search.createLink({
+                        id: 'detail' + v,
+                        title: '学生信息',
+                        text: v,
+                        href: 'detail/example.html'
+                    });
+                }},
+                {title: '机器名称', dataIndex: 'mname', width: 100,},
+                {title: '机器状态', dataIndex: 'mstatus', width: 70, renderer: BUI.Grid.Format.enumRenderer(enumObj)},
+                {title: '机器计时', dataIndex: 'clock', width: 60},
+                {title: '是否初始化', dataIndex: 'init', width: 60},
+ 				{title: '娃娃数量', dataIndex: 'gtype', width: 60, renderer: BUI.Grid.Format.enumRenderer(gType)},//
+ 				{title: '概率计算类型', dataIndex: 'mtype', width: 60, renderer: BUI.Grid.Format.enumRenderer(mType)},//
+               {title: '机器类型', dataIndex: 'machinetype', width: 70, renderer: BUI.Grid.Format.enumRenderer(machineType)},//
+                 {title: '红包机器开放金额', dataIndex: 'openrpvalue', width: 60},
+                {title: '消耗金币', dataIndex: 'useGold', width: 60},
+                 {title: '人民币价格', dataIndex: 'rmbprice', width: 60},
+                {title: '成本', dataIndex: 'price', width: 60},
+                {title: '其它成本 ', dataIndex: 'otherPrice', width: 60},
+                {title: '赢利', dataIndex: 'getPrice', width: 60},
+                {title: '难度系数', dataIndex: 'hardCft', width: 60},
+                {title: '必中修正值', dataIndex: 'offset', width: 60},
+                {title: '场标签', dataIndex: 'msign', width: 60, renderer: BUI.Grid.Format.enumRenderer(Msign)},
+				{title: '图片', dataIndex: 'mresource', width: 60},
+				{title: '标签', dataIndex: 'flagUrl', width: 60},
+                {title: '权重', dataIndex: 'sortId', width: 60},
+                {
+                    title: '操作', dataIndex: '', width: 200, renderer: function (value, obj) {
+						var editStr = '<span class="grid-command btn-edi" title="修改学生信息">修改</span>'
+                        delStr = '<span class="grid-command btn-del" title="删除学生信息">删除</span>';//页面操作不需要使用Search.createLink
+                    return editStr + delStr;
+                }
+                }
+            ],
+            store = Search.createStore("list"),
+            orderStore = store,
+            gridCfg = Search.createGridCfg(columns, {
+                tbar: {
+                    items: [
+                        {
+                            text: '<i class="icon-plus"></i>新建', btnCls: 'button button-small', handler: function () {
+	                            motailTitle = '新建';
+	                            var detial = '';
+	                            changeMotail(detial);
+	                            dialog.set('title',motailTitle);
+	                        }
+                        },
+                        {text: '<i class="icon-remove"></i>删除', btnCls: 'button button-small', handler: delFunction},
+                        {text: '<i class="icon-upload"></i>批量导入订单', btnCls: 'button button-small', handler: function(){
+                        		$('#importType').val(1);
+	                        	dialog2.show();
+	                        }
+                        },
+                        {
+                            text: '<i class="icon-edit"></i>生效', btnCls: 'button button-small', handler: function () {
+	                            alert('生效');
+	                        }
+                        }
+                    ]
+                },
+                plugins: [BUI.Grid.Plugins.CheckSelection] // 插件形式引入多选表格
+            });
+         //导入的模板   
+		var dialog2 = new Overlay.Dialog({
+            title: '批量导入订单',
+            width: 350,
+            height: 200,
+            buttons: [],
+            contentId: 'content1'
+        });
+		
+		 var progress = document.querySelector('#progress');
+	    var xhr = new XMLHttpRequest();
+	    var file = document.querySelector('#fileName');
+	
+	    
+	    //修改
+	    
+//	    修改结束
+
+	
+	    function uploadSuccess(event) {
+	        if (xhr.readyState === 4) {
+	            var ret = JSON.parse(xhr.responseText);
+	            if (ret.ErrorCode == 0) {
+	                BUI.Message.Alert('导入成功！', "info");
+	            } else {
+	                BUI.Message.Alert('导入失败！', "info");
+	            }
+	            orderStore.load();
+	        }
+	    }
+	
+	    // 进度条
+	    function setProgress(event) {
+	        if (event.lengthComputable) {
+	            var complete = Number.parseInt(event.loaded / event.total * 100);
+	            progress.innerHTML = complete + '%';
+	        }
+	    }
+//		导入结束
+        var search = new Search({
+                store: store,
+                gridCfg: gridCfg
+            }),
+            grid = search.get('grid');
+
+
+		grid.on('cellclick', function (ev) {
+            var sender = $(ev.domTarget); //点击的Dom
+            var record = ev.record;
+            if (sender.hasClass('btn-del')) {
+                delItems([record]);
+            } else if (sender.hasClass('btn-edi')) {
+            	motailTitle = '编辑';
+            	dialog.set('title',motailTitle);
+                changeMotail(record);
+            }
+        });
+		
+        //删除操作
+        function delFunction() {
+            var selections = grid.getSelection();
+            delItems(selections);
+        }
+//		删除
+        function delItems(items) {
+            var ids = [];
+            BUI.each(items, function (item) {
+                ids.push(item.id);
+            });
+			console.log(ids)
+            if (ids.length) {
+                BUI.Message.Confirm('确认要删除选中的记录么？', function () {
+//                  $.ajax({
+//                      url: '../data/del.php',
+//                      dataType: 'json',
+//                      data: {ids: ids},
+//                      success: function (data) {
+//                          if (data.success) { //删除成功
+//                              search.load();
+//                          } else { //删除失败
+//                              BUI.Message.Alert('删除失败！');
+//                          }
+//                      }
+//                  });
+					delMachine(ids)
+
+                }, 'question');
+            }
+        }
+
+        //监听事件，删除一条记录
+        grid.on('cellclick', function (ev) {
+            var sender = $(ev.domTarget); //点击的Dom
+            if (sender.hasClass('btn-del')) {
+                var record = ev.record;
+                delItems([record]);
+            }
+        });
+        
+        //编辑
+        function changeMotail(detial){
+        	dialog.show();
+        	if(detial){
+        		motailTitle = '修改';
+        		$('#J_Form').find('input[name=mid]').val(detial.mid);
+        		$('#J_Form').find('input[name=sortId]').val(detial.sortId);
+        		$('#J_Form').find('input[name=clock]').val(detial.clock);
+        		$('#J_Form').find('input[name=flagUrl]').val(detial.flagUrl);
+        		$('#J_Form').find('input[name=mresource]').val(detial.mresource);
+        		$('#J_Form').find('input[name=offset]').val(detial.offset);
+        		$('#J_Form').find('input[name=hardCft]').val(detial.hardCft);
+        		$('#J_Form').find('input[name=getPrice]').val(detial.getPrice);
+        		$('#J_Form').find('input[name=otherPrice]').val(detial.otherPrice);
+        		$('#J_Form').find('input[name=price]').val(detial.price);
+        		$('#J_Form').find('input[name=rmbprice]').val(detial.rmbprice);
+        		$('#J_Form').find('input[name=mname]').val(detial.mname);
+        		$('#J_Form').find('input[name=openrpvalue]').val(detial.openrpvalue);
+        		$('#J_Form').find('input[name=useGold]').val(detial.useGold);
+//      		$('#J_Form').find('select[name=mstatus]').find('option[value='+detial.mstatus+']').attr('selected',true);
+        		$('#J_Form').find('select[name=mstatus]').val(detial.mstatus);
+        		$('#J_Form').find('select[name=init]').val(detial.init);
+        		$('#J_Form').find('select[name=gtype]').val(detial.gtype);
+        		$('#J_Form').find('select[name=mtype]').val(detial.mtype);
+        		$('#J_Form').find('select[name=machinetype]').val(detial.machinetype);
+        		$('#J_Form').find('select[name=msign]').val(detial.msign);
+        	}
+        	if(!detial){
+        		getLastMachine(function(data){
+	        		motailTitle = '新建';
+	        		$('#J_Form').find('input').val('');
+	        		console.log(data)
+	        		$('#J_Form').find('input[name=mid]').val(data);
+        		})
+        	}
+        	
+        	console.log(detial)
+        };
+        //新建
+        function buildNewMachine(detial){
+        	sendJquery('/page/machine/buildNewMachine',detial,'post',true,function(data){
+        		 if (data.ErrorCode == 0) {
+                    BUI.Message.Alert('成功', 'success');
+                    store.load();
+                } else {
+                    BUI.Message.Alert('失败', 'info');
+                }
+        	})
+        };
+        //编辑
+        function updateMachine(detial){
+        	sendJquery('/page/machine/updateMachine',detial,'post',true,function(data){
+        		 if (data.ErrorCode == 0) {
+                    BUI.Message.Alert('成功', 'success');
+                    store.load();
+                } else {
+                    BUI.Message.Alert('失败', 'info');
+                }
+        	})
+        };
+//      删除
+        function delMachine(detial){
+        	var ids = new Object();
+        	ids.list = detial;
+        	sendJquery('/page/machine/delMachine',ids,'post',true,function(data){
+        		if (data.ErrorCode == 0) {
+                    BUI.Message.Alert('成功', 'success');
+                    store.load();
+                } else {
+                    BUI.Message.Alert('失败', 'info');
+                }
+        	})
+        };
+        //查询最后一条
+        function getLastMachine(cb) {
+            sendJquery('/page/machine/getLastMachine', null, 'GET', true, function (data) {
+            	console.log(data)
+                if (data) {
+                    cb && cb(data);
+                }
+            })
+        };
+      	
+    });
+</script>
+
+<body>
+</html>

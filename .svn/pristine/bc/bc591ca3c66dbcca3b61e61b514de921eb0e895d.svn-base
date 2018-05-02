@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel="stylesheet" href="/stylesheets/bootstrap-table.css"/>
+    <!--  <link rel="stylesheet" href="/stylesheets/bootstrap-table-reorder-rows.css"/>-->
+    <link rel="stylesheet" href="/stylesheets/bootstrap-editable.css"/>
+    <link rel="stylesheet" href="/stylesheets/bootstrap-datetimepicker.min.css"/>
+    <!--<link rel="stylesheet" href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">-->
+
+    <script src="/javascripts/jquery-3.2.1.min.js"></script>
+    <script src="/javascripts/bootstrap.min.js"></script>
+    <script src="/javascripts/bootstrap-table.js"></script>
+    <script src="/javascripts/bootstrap-table-zh-CN.js"></script>
+    <!--  <script src="/javascripts/bootstrap-table-reorder-rows.js"></script>-->
+    <script src="/javascripts/bootstrap-editable.js"></script>
+    <!--<script src="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>-->
+    <script src="/javascripts/bootstrap-table-editable.js"></script>
+    <script src="/javascripts/tableexport.js"></script>
+    <script src="/javascripts/bootstrap-table-export.js"></script>
+    <script src="/javascripts/bootstrap-datetimepicker.js"></script>
+    <script src="/javascripts/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="/javascripts/ajax.js"></script>
+</head>
+<body>
+
+<div class="panel-body" style="padding-bottom:0px;">
+    <div class="panel panel-default">
+        <div class="panel-heading">查询条件</div>
+        <div class="panel-body">
+            <form id="formSearch" class="form-horizontal">
+                <input type="hidden" id="state" value="1"/>
+                <div class="form-group" style="margin-top:15px">
+                    <div class="col-sm-1" style="text-align:left;">
+                        <button type="button" style="margin-left:50px" id="btn_query_checked" class="btn btn-primary">已审核</button>
+                    </div>
+                    <div class="col-sm-1" style="text-align:left;">
+                        <button type="button" style="margin-left:50px" id="btn_query_nochecked" class="btn btn-primary">未审核</button>
+                    </div>
+                    <div class="col-sm-1" style="text-align:left;">
+                        <button type="button" style="margin-left:50px" id="btn_query_charge" class="btn btn-primary">充值总额</button>
+                    </div>
+                    <div class="col-sm-1" style="text-align:left;">
+                        <button type="button" style="margin-left:50px" id="btn_query_spet" class="btn btn-primary">送出娃娃</button>
+                    </div>
+                    <div class="col-sm-4" style="text-align:left;">
+                        <span id="tips" style="margin-left:50px;font-weight:bold;text-align:center;font-size:22px;"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toolbar" class="btn-group">
+        <button id="btn_check" type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>批量审核
+        </button>
+        <button id="btn_edit" type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>修改
+        </button>
+        <button id="btn_delete" type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除
+        </button>
+        <button id="btn_exportxls" type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>导出Excel
+        </button>
+
+    </div>
+    <div class="input-group date form_date col-md-1" data-date="" data-date-format="yyyy MM dd">
+        <input class="form-control" id="eDate1" type="text" value="" readonly />
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+    </div>
+    <div class="input-group date form_date col-md-1" data-date="" data-date-format="yyyy MM dd">
+        <input class="form-control" id="eDate2" type="text" value="" readonly />
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+    </div>
+    <table id="tb_departments"></table>
+</body>
+
+<script type="text/javascript">
+    $('.form_date').datetimepicker({
+        language:  'zh-CN',
+        format: 'yyyy-mm-dd',//显示格式
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
+    $(function () {
+        var oTable = new TableInit();
+        oTable.Init();
+
+        var oButtonInit = new ButtonInit();
+        oButtonInit.Init();
+    });
+
+    $.fn.serializeJsonObject = function () {
+        var json = {};
+        var form = this.serializeArray();
+        $.each(form, function () {
+            if (json[this.name]) {
+                if (!json[this.name].push) {
+                    json[this.name] = [json[this.name]];
+                }
+                json[this.name].push();
+            } else {
+                json[this.name] = this.value || '';
+            }
+        });
+        return json;
+    }
+
+    var TableInit = function () {
+        var oTableInit = new Object();
+        //初始化Table
+        oTableInit.Init = function () {
+            var rowCount = 0;
+
+            $('#tb_departments').bootstrapTable({
+                url: '/order/getOrder',               //请求后台的URL（*）
+                method: 'get',                        //请求方式（*）
+                toolbar: '#toolbar',                  //工具按钮用哪个容器
+                striped: true,                        //是否显示行间隔色
+                cache: false,                         //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: false,                     //是否显示分页（*）
+                sortable: false,                      //是否启用排序
+                sortOrder: "asc",                     //排序方式
+                queryParams: oTableInit.queryParams,  //传递参数（*）
+                sidePagination: "server",             //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: 1,                         //初始化加载第一页，默认第一页
+                pageSize: 10,                         //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],          //可供选择的每页的行数（*）
+                search: true,                         //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                strictSearch: true,
+                showColumns: true,                   //是否显示所有的列
+                showRefresh: true,                    //是否显示刷新按钮
+                minimumCountColumns: 2,               //最少允许的列数
+                clickToSelect: true,                 //是否启用点击选中行
+                height: 700,                          //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "ID",                       //每一行的唯一标识，一般为主键列
+                showToggle: true,                      //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                      //是否显示详细视图
+                detailView: true,                    //是否显示父子表
+                showExport: true,                     //是否显示导出
+                exportDataType: "all",              //basic', 'all', 'selected'.
+
+                rowStyle: function (row, index) {
+                    //这里有5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
+                    var strclass = "";
+                    if (row.goodsType == "已邮寄") {
+                        strclass = 'success';
+                    } else if (row.goodsType == "审核中") {
+                        strclass = 'active';
+                    } else {
+                        return {};
+                    }
+                    return {classes: strclass}
+                },
+                columns: [{
+                    checkbox: true
+                }, {
+                    field: 'ID',
+                    title: 'ID',
+                    width: '3%',
+                    sortable: true,
+                    switchable: true
+                }, {
+                    field: 'orderStr',
+                    title: '订单号',
+                    width: '12%'
+                }, {
+                    field: 'userId',
+                    title: '用户ID',
+                    width: '5%'
+                }, {
+                    field: 'userName',
+                    title: '姓名',
+                    width: '7%'
+                }, {
+                    field: 'userCellPhone',
+                    title: '电话',
+                    width: '7%'
+                }, {
+                    field: 'userProvince',
+                    title: '省份'
+                }, {
+                    field: 'userCity',
+                    title: '城市'
+                }, {
+                    field: 'userAddress',
+                    title: '详细地址'
+                }, {
+                    field: 'getTime',
+                    title: '下单时间',
+                    width: '10%'
+                }, {
+                    field: 'goodsType',
+                    title: '状态',
+                    width: '5%'
+                }, {
+                    field: 'delivery',
+                    title: '快递单号',
+                    editable: {
+                        type: 'text'
+                    }
+                }, {
+                    field: 'kdcompany',
+                    title: '快递公司',
+                    width: '7%',
+                    formatter: companySec,
+                    /*editable: {
+                      type: "select",
+                      source:[
+                        {value:"shunfeng", text:"顺丰"},
+                        {value:"shentong", text:"申通"},
+                        {value:"yuantong", text:"圆通速递"},
+                        {value:"yunda", text:"韵达快运"},
+                        {value:"zhaijisong", text:"宅急送"},
+                        {value:"zhongtong", text:"中通速递"},
+                        {value:"youzhengguonei", text:"邮政"}
+                      ]
+                    }*/
+                    events: {
+                        'change .cSec': function (e, value, row, index) {
+                            var indexSelected = $(this).parent().parent()[0].rowIndex - 1;
+                            var valueSelected = $(this).children('option:selected').val();
+
+                            /* $('#tb_departments').bootstrapTable('updateCell', {
+                               index: indexSelected,
+                               field: 'kdcompany',
+                               value: valueSelected
+                             });*/
+                            $('#cSec_' + row.ID).val(valueSelected);
+                        }
+                    }
+                }, {
+                    field: 'kdcode',
+                    title: '快递公司代码',
+                    width: '5%'
+                }, {
+                    field: 'checktime',
+                    title: '审核时间',
+                    width: '5%'
+                }],
+                //注册加载子表的事件。注意下这里的三个参数！
+                onExpandRow: function (index, row, $detail) {
+                    oTableInit.InitSubTable(index, row, $detail);
+                },
+                onSearch: function () {
+                    //alert("暂不支持搜索");
+                },
+                onEditableSave: function (field, row, oldValue, $el) {
+                    /*$.ajax({
+                      type: "post",
+                      url: "/order/checkOrder",
+                      data: {
+                          orderStr: row.orderStr,
+                          goodsType: 2,
+                          delivery: row.delivery
+                      },
+                      success: function (data, status) {
+                          if (status == "success" && data.ErrorCode == 0) {
+                              //alert("审核成功");
+                              checkIngOrder();
+                          } else {
+                              alert(data.data);
+                          }
+                      },
+                      error: function () {
+                          alert("Error");
+                      },
+                      complete: function () {
+                      }
+                    });*/
+                }
+            });
+        };
+
+        companySec = function (value, row, index) {
+            var strHtml = "";
+            if ($('#state').val() != 1) {
+                strHtml = value;
+            } else {
+                strHtml = "<select data-tags='true' id='cSec_" + row.ID + "' data-placeholder='选择快递' class='selectpicker show-tick form-control cSec' data-live-search='false'>" +
+                    "<option value='-1'>选择快递</option>" +
+                    "<option value='shunfeng'>顺丰</option>" +
+                    "<option value='shentong'>申通</option>" +
+                    "<option value='yuantong'>圆通速递</option>" +
+                    "<option value='yunda'>韵达快运</option>" +
+                    "<option value='zhaijisong'>宅急送</option>" +
+                    "<option value='zhongtong'>中通速递</option>" +
+                    "<option value='youzhengguonei'>邮政</option>" +
+                    "</select>";
+            }
+
+            return strHtml;
+        };
+
+        //初始化子表格(无线循环)
+        oTableInit.InitSubTable = function (index, row, $detail) {
+            var parentid = row.orderStr;
+            var cur_table = $detail.html('<table></table>').find('table');
+            $(cur_table).bootstrapTable({
+                url: '/order/getOrderGoods',
+                method: 'get',
+                queryParams: {orderStr: parentid},
+                ajaxOptions: {orderStr: parentid},
+                clickToSelect: true,
+                detailView: false,//父子表
+                uniqueId: "goodsId",
+                pageSize: 10,
+                pageList: [10, 25],
+                columns: [{
+                    field: 'goodsId',
+                    title: '玩偶ID'
+                }, {
+                    field: 'goodsCount',
+                    title: '玩偶数量'
+                }, {
+                    field: 'goodsName',
+                    title: '玩偶名称'
+                }, {
+                    field: 'goodsImg',
+                    title: '玩偶图片',
+                    formatter: function (value, row, index) {
+                        return '<img src="' + value + '" class="img-rounded" style="width:120px;height:120px">';
+                    }
+                }],
+                //无线循环取子表，直到子表里面没有记录
+                onExpandRow: function (index, row, $Subdetail) {
+                    oTableInit.InitSubTable(index, row, $Subdetail);
+                }
+            });
+        };
+
+        //得到查询的参数
+        oTableInit.queryParams = function (params) {
+            var temp = {              //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                limit: params.limit,    //页面大小
+                offset: params.offset,  //页码
+                search: params.search,
+                state: $('#state').val()
+            };
+            /*var temp = $("#formSearch").serializeJsonObject();
+            temp["limit"]=params.limit;
+            temp["offset"]=params.offset;*/
+            return temp;
+        };
+        return oTableInit;
+    };
+
+    var ButtonInit = function () {
+        var oInit = new Object();
+
+        oInit.Init = function () {
+            $("#btn_query_checked").click(function () {
+                seachOrder(function (data) {
+                    checkedOrder();
+                    $('#btn_check').hide();
+                    $('#btn_edit').hide();
+                });
+            });
+            $("#btn_query_nochecked").click(function () {
+                seachOrder(function (data) {
+                    checkIngOrder();
+                    $('#btn_check').show();
+                    $('#btn_edit').show();
+                });
+            });
+        };
+
+        return oInit;
+    };
+
+    function seachOrder(callback) {
+        sendData("order/getOrder", null, "GET", function (data) {
+            if (data) {
+                callback(data);
+            }
+        });
+    }
+
+    function checkIngOrder() {
+        $('#state').val(1);
+        $("#tb_departments").bootstrapTable('refresh');
+    }
+
+    function checkedOrder() {
+        $('#state').val(2);
+        $("#tb_departments").bootstrapTable('refresh');
+    }
+
+    $('#btn_check').click(function () {
+        var sec = $('#tb_departments').bootstrapTable('getSelections');
+
+        if (sec.length == 0) {
+            tipShow("至少选择一行");
+        } else {
+            var flag = true;
+            for (var i = 0; i < sec.length; i++) {
+                if (!sec[i].delivery) {
+                    tipShow("订单" + sec[i].orderStr + "没有快递单号");
+                    flag = false;
+                    break;
+                }
+                //if (!sec[i].kdcompany) {
+                if (!$('#cSec_' + sec[i].ID).val()) {
+                    tipShow("订单" + sec[i].orderStr + "没有快递公司");
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                var checkData = {odata: []};
+
+                for (var i = 0; i < sec.length; i++) {
+                    checkData.odata.push(JSON.stringify({
+                        orderStr: sec[i].orderStr,
+                        delivery: sec[i].delivery,
+                        // kdcompany: sec[i].kdcompany
+                        kdcompany: $('#cSec_' + sec[i].ID).val()
+                    }));
+                }
+                checkData.odata.push(JSON.stringify({seat: true}));
+                sendJquery('/order/checkOrder', checkData, 'POST', true, function (data) {
+                    tipShow("审核完成");
+                    checkIngOrder();
+                });
+            }
+        }
+    });
+
+    $('#btn_exportxls').click(function () {
+        var state = $('#state').val();
+        var eDate1 = $('#eDate1').val();
+        var eDate2 = $('#eDate2').val();
+
+        if (!eDate1 && !eDate2) {
+            tipShow("选择导出时间段");
+            return ;
+        }
+
+        var url = '/order/export?s=' + state + "&ed1=" + eDate1 + "&ed2=" + eDate2;
+
+        sendJquery(url, null, 'GET', true, function (data) {
+
+            tipShow("导出完成");
+        });
+    });
+
+    $('#btn_query_charge').click(function() {
+        sendJquery("/charge/getAllMoney", null, "GET", false, function (data) {
+            if (data) {
+                alert(JSON.stringify(data));
+            }
+        });
+    });
+
+    $('#btn_query_spet').click(function() {
+        sendJquery("/order/getAllPetSum", null, "GET", false, function (data) {
+            if (data) {
+                alert(JSON.stringify(data));
+            }
+        });
+    });
+
+    function tipShow(txt) {
+        $('#tips').show();
+        $('#tips').text(txt);
+        $('#tips').fadeOut(3000);
+    }
+</script>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>工单列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css" />
+    <style>
+    	textarea{
+    		height: 120px;
+    	}
+    	#remark{
+    		height: 50px;
+    	}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="search-grid-container">
+        <div id="grid"></div>
+    </div>
+	<div id="content" class="hide demo-content">
+		<div class="controls control-row4">
+			<label class="control-label">回复：</label>
+          	<textarea name="answer" class="control-row4 input-large" type="text"></textarea>
+        </div>
+        <div class="controls control-row4">
+	        <label class="control-label">备注：</label>
+          	<textarea name="remark" id = "remark" class="control-row4 input-large" type="text"></textarea>
+	    </div>
+    </div>
+</div>
+<body>
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script type="text/javascript">
+	var storage = window.localStorage;
+    BUI.use(['common/search','bui/overlay'], function (Search,Overlay) {
+    	var subpeople = {"1": "客服1", "2": "客服2", "3": "客服3"};
+		var status = {"0": "未回复", "1": "已回复"};	
+        var columns = [
+                {title: '标题', dataIndex: 'title', width: 140},
+                {title: '玩家Id', dataIndex: 'userid', width: 80},
+                {title: '描述', dataIndex: 'content', width: 200},
+                {title: '提交人', dataIndex: 'subpeople', width: 60,renderer: BUI.Grid.Format.enumRenderer(subpeople)},
+                {title: '提交时间', dataIndex: 'subtime', width: 170},
+                {title: '状态', dataIndex: 'status', width: 80,renderer: BUI.Grid.Format.enumRenderer(status)},
+                {title: '回复时间', dataIndex: 'answertime', width: 170},
+                {title: '回复内容', dataIndex: 'answercontent', width: 200},
+                {title: '备注', dataIndex: 'remark', width: 200},
+                {
+                    title: '操作', dataIndex: '', width: 200, renderer: function (value, obj) {
+						var editStr = '<span class="grid-command btn-edi" title="修改学生信息">回复</span>'
+                        delStr = '<span class="grid-command btn-del" title="删除学生信息">删除</span>';//页面操作不需要使用Search.createLink
+                    return editStr + delStr;
+                }}
+            ],
+            store = Search.createStore("getBugList", {
+                autoSync: true
+
+            }),
+            gridCfg = Search.createGridCfg(columns, {
+                tbar: {
+                    items: [
+                         {text: '<i class="icon-check "></i>删除', btnCls: 'button button-small',handler: delBugList },
+                    ]
+                },
+                plugins: [BUI.Grid.Plugins.CheckSelection] // 插件形式引入多选表格
+            });
+        var search = new Search({
+                store: store,
+                gridCfg: gridCfg
+            }),
+        grid = search.get('grid');
+        
+		grid.on('cellclick', function (ev) {
+            var sender = $(ev.domTarget); //点击的Dom
+            var record = ev.record;
+            var _thisId = record.id;
+            
+            if (sender.hasClass('btn-del')) {
+                delBug([record]);
+                
+            } else if (sender.hasClass('btn-edi')) {
+				if(record.status == 1){
+					 BUI.Message.Alert('不可重复回复', 'info');
+				}
+				else{
+					storage.setItem('answerId',_thisId);
+            		dialog.show();
+				}
+				
+            }
+        });
+        
+        grid.on('icon-check', function (ev) {
+            alert(1111)
+        });
+        var dialog = new Overlay.Dialog({
+            title: '回复',
+            width: 350,
+            height: 280,
+            buttons: [],
+            contentId: 'content',
+            data:'2',
+            buttons:[
+              {
+                text:'确定',
+                elCls : 'button button-primary',
+                handler : function(){
+                	console.log(this.data)
+                  //do some thing
+                  var answerDetial = $('.bui-dialog.bui-overlay.bui-ext-position.x-align-cc-cc').find('textarea[name=answer]').val();
+                  var remark = $('.bui-dialog.bui-overlay.bui-ext-position.x-align-cc-cc').find('textarea[name=remark]').val()
+	                updateAnswer(answerDetial,remark);
+	                this.close();
+                  
+                }
+              },{
+                text:'关闭',
+                elCls : 'button',
+                handler : function(){
+                  this.close();
+                }
+              }
+            ],
+        });
+//      删除
+        function delBugList(data){
+        	var selections = grid.getSelection();
+			delBug(selections);
+        };
+        /**
+         * 删除的方法
+         */
+        
+        function delBug(option){
+        	var dataList = [],data = {};
+        	for(i in option){
+				dataList.push(option[i].id)
+			};
+			data.list = dataList;
+        	sendJquery('/page/bug/delAnswer',data,'post',true,function(data){
+        		if (data.ErrorCode == 0) {
+                    BUI.Message.Alert('成功', 'success');
+                    store.load();
+                } else {
+                    BUI.Message.Alert('失败', 'info');
+                }
+        	})
+        }
+        //回复
+        function updateAnswer(detial,remark){
+        	var id = storage.getItem('answerId');
+        	var data = {};
+        	data.list = detial;
+        	data.status = 1;
+        	data.remark = remark,
+        	data.answertime = new Date().format("yyyyMMddHHmmss");
+        	data.id = id;
+        	
+        	sendJquery('/page/bug/updateAnswer',data,'post',true,function(data){
+        		if (data.ErrorCode == 0) {
+                    BUI.Message.Alert('成功', 'success');
+                    store.load();
+                } else {
+                    BUI.Message.Alert('失败', 'info');
+                }
+        	});
+        };
+        Date.prototype.format = function (format) {
+		    //eg:format="yyyy-MM-dd hh:mm:ss";
+		
+		    if (!format) {
+		        format = "yyyy-MM-dd hh:mm:ss";
+		    }
+		
+		    var o = {
+		        "M+": this.getMonth() + 1,  // month
+		        "d+": this.getDate(),       // day
+		        "H+": this.getHours(),      // hour
+		        "h+": this.getHours(),      // hour
+		        "m+": this.getMinutes(),    // minute
+		        "s+": this.getSeconds(),    // second
+		        "q+": Math.floor((this.getMonth() + 3) / 3), // quarter
+		        "S": this.getMilliseconds()
+		    };
+		
+		    if (/(y+)/.test(format)) {
+		        format = format.replace(RegExp.$1, (this.getFullYear() + "")
+		            .substr(4 - RegExp.$1.length));
+		    }
+		
+		    for (var k in o) {
+		        if (new RegExp("(" + k + ")").test(format)) {
+		            format = format.replace(RegExp.$1, RegExp.$1.length == 1
+		                ? o[k]
+		                : ("00" + o[k]).substr(("" + o[k]).length));
+		        }
+		    }
+		
+		    return format;
+		};
+    });
+</script>
+</html>

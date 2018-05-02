@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>模板通告</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row form-horizontal">
+                <div class="control-group span8">
+                    <label class="control-label">选择模板：</label>
+                    <div class="controls">
+                        <select name="temptype" id="temptype">
+                            <option value="0">选择模板</option>
+                            <option value="sendNewPet">上新通告</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group span8>
+                    <label class="control-label"></label>
+                    <div class="controls">
+                        <button type="button" onclick="sendTemp();" class="button button-primary">发送模板消息</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span8">
+                    <form id="searchForm" class="form-horizontal">
+                    </form>
+                </div>
+            </div>
+            <div class="search-grid-container">
+                <div id="grid"></div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+        <script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+        <script type="text/javascript" src="../../assets/js/config-min.js"></script>
+        <script src="/javascripts/ajax.js"></script>
+        <script src="/javascripts/utils.js"></script>
+
+        <script type="text/javascript">
+            function sendTemp() {
+                var sendData = {};
+                var type = $('#temptype').val();
+
+                var form = document.getElementById('searchForm');
+                var formChilds = form.childNodes;
+
+                for (var i = 0; i < formChilds.length; i++) {
+                    var input = formChilds[i].childNodes[0].getElementsByTagName("input");
+                    var id = input[0].id;
+                    var value = input[0].value;
+
+                    sendData[id] = value;
+                }
+
+                sendData.tempType = type;
+
+                if (type == 0) {
+                    return ;
+                }
+
+                sendJquery('sendTemp', sendData, 'POST', true, function (data) {
+                    BUI.Message.Alert('发送成功', 'success');
+                });
+            }
+            $('#temptype').change(function() {
+                var tempVal = $('#temptype').val();
+                var form = document.getElementById('searchForm');
+                var formChilds = form.childNodes;
+                var len = formChilds.length;
+
+                while(len > 0) {
+                    if (formChilds[len - 1]) {
+                        form.removeChild(formChilds[len - 1]);
+                    }
+
+                    len--;
+                }
+
+                sendJquery('getTempData?temp='+tempVal, null, 'GET', true, function (data) {
+                    if (data) {
+                        for (var id in data) {
+                            var div = document.createElement("div");
+                            var iDiv = document.createElement("div");
+                            var label = document.createElement("label");
+                            var cDiv = document.createElement("div");
+                            var input = document.createElement("input");
+
+                            input.type = "text";
+                            input.id = id;
+                            input.className = "control-text";
+
+                            if (id == "first") {
+                                input.value = "您好，娃娃机上新已完成";
+                            }
+
+                            if (id == "remark") {
+                                input.value = "↓↓↓马上去抓,点击进入游戏";
+                            }
+
+                            if (id == "keyword2") {
+                                input.value = "更新完成";
+                            }
+
+                            cDiv.className = "controls";
+                            label.className="control-label";
+                            label.innerText = data[id];
+                            iDiv.className = "control-group span8";
+                            div.className="row";
+
+                            cDiv.appendChild(input);
+                            iDiv.appendChild(label);
+                            iDiv.appendChild(cDiv);
+                            div.appendChild(iDiv);
+                            form.appendChild(div);
+                        }
+                    }
+                });
+            });
+
+        </script>
+    <body>
+</html>

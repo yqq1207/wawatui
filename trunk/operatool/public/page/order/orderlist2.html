@@ -1,0 +1,194 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>发货中订单</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+
+<div class="container">
+    <form id="searchForm" class="form-horizontal">
+        <div class="row">
+            <div class="control-group span12">
+                <label class="control-label">选择时间：</label>
+                <div class="controls">
+                    <input type="text" id="startDate" class="calendar calendar-time" name="startDate"/>
+                    <span> - </span>
+                    <input type="text" id="endDate" class="calendar calendar-time" name="endDate"/>
+                </div>
+            </div>
+            <div class="span3">
+                <button type="button" id="btnSearch" class="button button-primary">搜索</button>
+            </div>
+        </div>
+    </form>
+    <div id="content" class="hide">
+        <div class="row">
+            <div class="control-group span8">
+                <div class="controls">
+                    <label class="control-label"></label>
+                    <!--<form method="post" enctype="multipart/form-data" action="importOrder">-->
+                    <input type="file" name="fileName" id="fileName" />
+                    <input type="hidden" name="importType" id="importType" />
+                    <input type="button" id="import" value="导入">
+                    <span id="progress" style="margin-left:10px;">0%</span>
+                    <!-- </form>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="search-grid-container">
+        <div id="grid"></div>
+    </div>
+</div>
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="/javascripts/ajax.js"></script>
+<script type="text/javascript">
+    var orderStore = null;
+
+    BUI.use(['common/search', 'common/page', 'bui/overlay', 'bui/calendar'], function (Search, Page, Overlay, Calendar) {
+
+        var enumObj = {"0": "未提取", "1": "配货中", "2": "已发货", "3": "发货中"},
+            columns = [
+                {title: '订单号', dataIndex: 'orderStr', width: 140},
+                {title: '用户ID', dataIndex: 'userId', width: 50},
+                {title: '姓名', dataIndex: 'userName', width: 70},
+                {title: '电话', dataIndex: 'userCellPhone', width: 90},
+                {title: '省份', dataIndex: 'userProvince', width: 80},
+                {title: '城市', dataIndex: 'userCity', width: 80},
+                {title: '详细地址', dataIndex: 'userAddress', width: 300},
+                {title: '下单时间', dataIndex: 'getTime', width: 120},
+                {title: '状态', dataIndex: 'goodsType', width: 60, renderer: BUI.Grid.Format.enumRenderer(enumObj)},
+                {title: '备注', dataIndex: 'remarks', width: 120},
+                {
+                    title: '操作', dataIndex: '', width: 200, renderer: function (value, obj) {
+                    var editStr = Search.createLink({ //链接使用 此方式
+                            id: 'edit_' + obj.orderStr,
+                            title: '查看订单信息',
+                            text: '【查看】',
+                            href: 'page/order/edit.html?order='+obj.orderStr+"&name="+obj.userName+"&tel="+obj.userCellPhone+"&delivery="+obj.delivery+"&date="+obj.getTime +"&optype=1"
+                        });
+                    return editStr;
+                }
+                }
+            ],
+            store = Search.createStore("getOrderY", {
+                state: 1
+            }),
+            gridCfg = Search.createGridCfg(columns, {
+                tbar: {
+                    items: [
+                        {text: '<i class="icon-upload"></i>按内部订单号导入', btnCls: 'button button-small', handler: importOrder},
+                        {text: '<i class="icon-upload"></i>按手机号导入', btnCls: 'button button-small', handler: importOrderByPhone}
+                    ]
+                },
+                plugins: [BUI.Grid.Plugins.CheckSelection] // 插件形式引入多选表格
+            });
+
+        orderStore = store;
+
+        var search = new Search({
+            store: store,
+            gridCfg: gridCfg
+        });
+
+        var grid = search.get('grid');
+        var dialog = new Overlay.Dialog({
+            title: '按内部订单号导入',
+            width: 350,
+            height: 100,
+            buttons: [],
+            contentId: 'content'
+        });
+        var datepicker = new Calendar.DatePicker({
+            trigger:'.calendar-time',
+            showTime:true,
+            autoRender : true
+        });
+
+        function importOrder() {
+            $('#importType').val(1);
+            dialog.show();
+        }
+        function importOrderByPhone() {
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+
+            if (isNull(startDate) || isNull(endDate)) {
+                BUI.Message.Alert('请选择导入时间', 'warning');
+                return;
+            }
+
+            if (endDate < startDate) {
+                BUI.Message.Alert('时间选择不正确', 'warning');
+                return;
+            }
+
+            $('#importType').val(2);
+            dialog.show();
+        }
+        grid.on('cellclick', function (ev) {
+            var sender = $(ev.domTarget); //点击的Dom
+            if (sender.hasClass('btn-save')) {
+                var record = ev.record;
+                var checkData = {};
+
+                checkData.orderStr = record.orderStr;
+                BUI.Message.Confirm('确认要保存选中的记录么？', function () {
+                    sendJquery('/page/order/redirectFinish', checkData, 'POST', true, function (data) {
+                        BUI.Message.Alert('保存成功', 'success');
+                        store.load();
+                    });
+                }, 'question');
+            }
+        });
+    });
+
+    function isNull(str) {
+        return !str || (typeof str == "undefined") || str == "";
+    }
+
+    var progress = document.querySelector('#progress');
+    var xhr = new XMLHttpRequest();
+    var file = document.querySelector('#fileName');
+
+    $('#import').click(function () {
+        var formData = new FormData();
+        formData.append('order-upload', file.files[0]);
+        formData.append('type', $('#importType').val());
+        formData.append('startDate', $('#startDate').val());
+        formData.append('endDate', $('#endDate').val());
+        xhr.onload = uploadSuccess;
+        xhr.upload.onprogress = setProgress;
+        xhr.open('post', 'importOrder', true);
+        xhr.send(formData);
+    });
+
+    function uploadSuccess(event) {
+        if (xhr.readyState === 4) {
+            var ret = JSON.parse(xhr.responseText);
+            if (ret.ErrorCode == 0) {
+                BUI.Message.Alert('导入成功！', "info");
+            } else {
+                BUI.Message.Alert('导入失败！', "info");
+            }
+            orderStore.load();
+        }
+    }
+
+    // 进度条
+    function setProgress(event) {
+        if (event.lengthComputable) {
+            var complete = Number.parseInt(event.loaded / event.total * 100);
+            progress.innerHTML = complete + '%';
+        }
+    }
+</script>
+
+<body>
+</html>

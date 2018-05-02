@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>充值列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+
+<div class="container">
+    <form id="searchForm" class="form-horizontal">
+        <div class="row">
+            <div class="control-group span9">
+                <label class="control-label">选择时间：</label>
+                <div class="controls">
+                    <input name="startDate" id="startDate" type="text" class="calendar"><span> - </span>
+                    <input name="endDate" id="endDate" type="text" class="calendar">
+                </div>
+            </div>
+            <div class="span3">
+                <button type="button" id="btnSearch" class="button button-primary">搜索</button>
+            </div>
+        </div>
+    </form>
+    <div class="search-grid-container">
+        <div id="grid"></div>
+    </div>
+</div>
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script src="../../javascripts/base64.js"></script>
+<script src="../../javascripts/utils.js"></script>
+<script type="text/javascript">
+    BUI.use(['common/search', 'common/page'], function (Search) {
+        var state = {"0": "已取消", "1": "已支付", "2": "已完成"},
+            columns = [
+                {title: '支付订单号', dataIndex: 'orderstr', width: 190},
+                {title: '玩家ID', dataIndex: 'userid', width: 50},
+                {title: '玩家昵称', dataIndex: 'username', width: 180, renderer: function(value, obj) {
+                    var base64 = new Base64();
+                    return base64.decode(value);
+                }},
+                {title: '物品名称', dataIndex: 'goodsname', width:130},
+                {title: '下单日期', dataIndex: 'goodstime', width: 130, renderer: function(value, obj) {
+                    return new Date(value * 1000).Format("yyyy-MM-dd HH:mm:ss");
+                }},
+                {title: '物品价格', dataIndex: 'goodsprice', width: 70, renderer: function(value, obj) {
+                    return value + "元";
+                }},
+                {title: '虚拟金币', dataIndex: 'goodnumber', width: 60},
+                {title: '订单状态', dataIndex: 'orderstate', width: 70, renderer: BUI.Grid.Format.enumRenderer(state)},
+                {title: '付款银行', dataIndex: 'banktype', width: 60},
+                {title: '实付金额', dataIndex: 'cashfee', width: 60, renderer:function(value, obj) {
+                    return (value / 100) + "元";
+                }},
+                {title: '标价币种', dataIndex: 'feetype', width: 70},
+                {title: '支付完成时间', dataIndex: 'timeend', width: 130, renderer:function(value, obj) {
+                    var date = value.substring(0, 4) + "-" + value.substring(4,6) + "-" + value.substring(6,8) + " " + value.substring(8,10) + ":" + value.substring(10,12) + ":" + value.substring(12,14);
+
+                    return value == 0 ? "" : date;
+
+                }},
+                {title: '微信支付订单号', dataIndex: 'transactionid', width: 180}
+            ],
+            store = Search.createStore("getChargeOrder", {
+                autoSync: true
+            }),
+            gridCfg = Search.createGridCfg(columns, {
+                tbar: {
+                    items: [
+                        {text: '<i class="icon-check"></i>已支付/已完成', btnCls: 'button button-small', handler: finishOrder},
+                        {text: '<i class="icon-check"></i>已取消', btnCls: 'button button-small', handler: cancelOrder}
+                    ]
+                },
+                plugins: [BUI.Grid.Plugins.CheckSelection] // 插件形式引入多选表格
+            });
+        var search = new Search({
+                store: store,
+                gridCfg: gridCfg
+            }),
+            grid = search.get('grid');
+
+        function finishOrder() {
+            sendJquery('changerOrderByState?type=1', null, 'GET', false, function (data) {
+                store.load();
+            });
+        };
+
+        function cancelOrder() {
+            sendJquery('changerOrderByState?type=2', null, 'GET', false, function (data) {
+                store.load();
+            });
+        };
+    });
+
+    function isNull(str) {
+        return !str || (typeof str == "undefined") || str == "";
+    }
+</script>
+
+<body>
+</html>

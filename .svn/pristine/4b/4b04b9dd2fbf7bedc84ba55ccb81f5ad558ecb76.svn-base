@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>仓库实物库存查询</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .number_1 {
+            width: 80px;
+        }
+        .bui-stdmod-body{
+        	overflow: auto;
+        }
+        #detailForm,#searchForm{
+        	padding-left: 20px;
+        	padding-top: 20px;
+        }
+        #searchForm .row{
+        	margin-top: 10px;
+        	display: inline-block;
+        }
+         #searchForm .span3{
+        	float: none;
+        	width: 200px;
+        	text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="row" >
+    <div class="span24">
+      <form name="" action="" method="post" id="detailForm">
+    
+        <h3>出库单详情</h3>   
+        <div class="row detail-row">
+          <div class="span10">
+          <label>开放平台退供应商单据编号： </label><span class="detail-text" id="eclpRtsNo">eclpRtsNo</span>   
+          </div>
+          <div class="span10">
+          <label>ISV退供应商单号：</label><span class="detail-text" id="isvRtsNum">isvRtsNum</span>
+          </div>
+        </div>    
+        <div class="row detail-row">
+          <div class="span10">
+          <label>所属货主(事业部)编号 ：</label><span class="detail-text" id="deptNo">deptNo</span>
+          </div>
+          <div class="span10">
+            <label>提货方式(1、商家自提。2、京东配送) ：</label><span class="detail-text" id="deliveryMode">deliveryMode  </span>
+          </div>
+        </div>    
+        <div class="row detail-row">
+          <div class="span10">
+            <label>	供应商编号：</label><span class="detail-text" id="supplierNo">supplierNo </span>
+          </div>
+          <div class="span10">
+            <label>	退供应商单当前状态(返回枚举值。初始化、已完成、取消中、已取消) ：</label><span class="detail-text" id="rtsOrderStatus">rtsOrderStatus  </span>
+          </div>
+        </div>    
+        <div class="row detail-row">
+          <div class="span10">
+            <label>操作时间  :</label><span class="detail-text" id="operatorTime">operatorTime</span>
+          </div>
+          <div class="span10">
+            <label >操作人 ：</label><span class="detail-text" id="operatorUser">operatorUser </span>
+          </div>
+        </div>    
+        <div class="row detail-row">
+          <div class="span10">
+            <label>	来源(ISV) ：</label><span class="detail-text" id="source">source  </span>
+          </div>
+          <div class="span10">
+            <label>	备注：</label><span class="detail-text" id="remark">remark  </span>
+          </div>
+        </div>    
+        <div class="row detail-row">
+          <div class="span10">
+            <label>		收货人姓名  ：</label><span class="detail-text" id="receiver">receiver  </span>
+          </div>
+          <div class="span10">
+            <label>	收货人电话 ：</label><span class="detail-text" id="receiverPhone">receiverPhone  </span>
+          </div>
+        </div>  <div class="row detail-row">
+          <div class="span10">
+            <label>	电子邮件  ：</label><span class="detail-text" id="email">email </span>
+          </div>
+          <div class="span10">
+            <label>省 ：</label><span class="detail-text" id="province">province </span>
+          </div>
+        </div>  
+        <div class="row detail-row">
+          <div class="span10">
+            <label>	市  ：</label><span class="detail-text" id="city">city  </span>
+          </div>
+          <div class="span10">
+            <label>	县：</label><span class="detail-text" id="county">county </span>
+          </div>
+        </div> 
+        <div class="row detail-row">
+          <div class="span10">
+            <label>	镇 ：</label><span class="detail-text" id="town">town  </span>
+          </div>
+          <div class="span10">
+            <label>退库库房编号(出库库房编号，必须为事业部签署的正生效的物流服务下的库房) ：</label><span class="detail-text" id="warehouseNo">warehouseNo  </span>
+          </div>
+        </div> 
+        <div class="row detail-row">
+          <div class="span10">
+            <label>	处理结果(1为接收成功，其它均为失败) ：</label><span class="detail-text" id="ext5">resultCode  </span>
+          </div>
+          <div class="span10">
+            <label>		失败信息 ：</label><span class="detail-text" id="msg">msg  </span>
+          </div>
+        </div>
+        <div class="row detail-row">
+          <div class="span10" style="width: 940px;height: 50px;font-size: 20px;text-align: center;font-weight: 700;">
+            <label >	退供应商明细信息集合 ：</label><span class="detail-text" id="rtsDetailList">rtsDetailList </span>
+          </div>
+          <!--<div class="span10">
+            <label>	处理结果(1为接收成功，其它均为失败) ：</label><span class="detail-text" id="ext5">resultCode  </span>
+          </div>-->
+          <div style="width: 100%;height: auto;display: block;">
+          		<div class="row detail-row">
+		          <div class="span10">
+		            <label>	事业部商品编号：</label><span class="detail-text" id="deptGoodsNo">deptGoodsNo  </span>
+		          </div>
+		          <div class="span10">
+		            <label>商品名称 ：</label><span class="detail-text" id="goodsName">goodsName  </span>
+		          </div>
+		        </div> 
+		        <div class="row detail-row">
+		          <div class="span10">
+		            <label>		申请出库数量 ：</label><span class="detail-text" id="quantity">quantity  </span>
+		          </div>
+		          <div class="span10">
+		            <label>实际出库数量：</label><span class="detail-text" id="realQuantity">realQuantity   </span>
+		          </div>
+		        </div>
+		        <div class="row detail-row">
+		          <div class="span10">
+		            <label>	商品状态(良品；残品；样品) ：</label><span class="detail-text" id="goodsStatus">goodsStatus  </span>
+		          </div>
+		          
+		        </div>
+          </div>
+        </div> 
+        
+      </form>
+    </div>
+  </div>
+
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script src="../../javascripts/utils.js"></script>
+
+<script type="text/javascript">
+	
+	$(function(){
+		$('#btnSearch').click(function(){
+			var deptNo = $('#deptNo').val(),
+			warehouseNo = $('#warehouseNo').val();
+			if (isNull(deptNo) || isNull(warehouseNo)) {
+                    BUI.Message.Alert('加红*的为必填项!', 'info');
+                    return ;
+           };
+           var formData = $("#searchForm").serialize();
+           console.log(formData)
+            searchQueryStock(formData, function(data) {
+                if (data.ErrorCode == 0) {
+                    BUI.Message.Alert('添加成功', 'info');
+                } else {
+                    BUI.Message.Alert('添加失败', 'info');
+                }
+            });
+			
+		});
+		function searchQueryStock(data,cb){
+			
+			sendJquery('/page/jd/searchQueryStock',data,'get',true,function(res){
+				cb(res)
+			})
+			
+		}
+	})
+	
+	
+</script>
+</body>
+</html>

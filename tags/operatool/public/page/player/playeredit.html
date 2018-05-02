@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>玩家详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+</head>
+<body onload="load()">
+
+<div class="container">
+
+    <form id="searchForm" class="form-horizontal">
+        <div class="row">
+            <div class="control-group span8">
+                <label class="control-label">玩家ID：</label>
+                <div class="controls">
+                    <input type="text" name="userId" id="userId" readonly="readonly"/>
+                </div>
+            </div>
+            <div class="control-group span8">
+                <label class="control-label">玩家昵称：</label>
+                <div class="controls">
+                    <input type="text" id="nickname" readonly="readonly"/>
+                </div>
+            </div>
+            <div class="control-group span8">
+                <label class="control-label"></label>
+                <div class="controls">
+                    <span id="userImg"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="control-group span8">
+                <label class="control-label">玩家金币：</label>
+                <div class="controls">
+                    <input type="text" id="gold" readonly="readonly"/>
+                </div>
+            </div>
+            <div class="control-group span8">
+                <label class="control-label">增加金币：</label>
+                <div class="controls">
+                    <input type="text" name="addGold" id="addGold" value="0" data-rules="{number:true}"/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="control-group span16">
+                <label class="control-label">添加描述：</label>
+                <div class="controls">
+                    <input type="text" name="addGold" id="operDetail" value="活动赠送" data-rules="{required:true}"/>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <div class="control-group span12 offset2">
+            <label class="control-label"></label>
+            <div class="controls">
+                <button type="submit" onclick="checkOrder();" class="button button-primary">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-grid-container">
+        <div id="grid"></div>
+    </div>
+</div>
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+
+<script type="text/javascript">
+    function load() {
+        var thisURL = document.URL;
+        var getVal = thisURL.split('?')[1];
+        var userId = getVal.split("=")[1];
+
+        document.getElementById("userId").value = userId;
+
+        getUserInfo(userId, function(data) {
+            if (data) {
+                document.getElementById("nickname").value = data['rows'][0].nickname;
+                document.getElementById("userImg").innerHTML = '<img src="' + data['rows'][0].avatarId + '" style="border:medium double black;width:96px; height:96px;"/>';
+                document.getElementById("gold").value = data['rows'][0].gold;
+                showGird();
+            }
+        });
+    }
+
+    function getUserInfo(userId, callback) {
+        sendJquery('/page/player/getPlayer?userId='+userId, null, 'GET', true, function (data) {
+            callback(data);
+        });
+    }
+
+    var resultStore = null;
+
+    function showGird() {
+        BUI.use(['common/search', 'common/page'], function (Search) {
+            var columns = [
+                    {title: '玩家ID', dataIndex: 'userId', width: 70},
+                    {title: '增加金币', dataIndex: 'addGold', width: 70},
+                    {title: '增加时间', dataIndex: 'addtime', width: 200},
+                    {title: '操作员', dataIndex: 'operuser', width: 120},
+                    {title: '操作说明', dataIndex: 'operdetail', width: 200}
+                ],
+                store = Search.createStore("getAddGoldResult"),
+                gridCfg = Search.createGridCfg(columns, {
+                    tbar: {
+                        items: []
+                    },
+                    plugins: [BUI.Grid.Plugins.CheckSelection] // 插件形式引入多选表格
+                });
+
+            resultStore = store;
+
+            var search = new Search({
+                    store: store,
+                    gridCfg: gridCfg
+                }),
+                grid = search.get('grid');
+        });
+    }
+
+    function checkOrder() {
+        var userId = document.getElementById("userId").value;
+        var gold = document.getElementById("gold").value;
+        var addGold = document.getElementById("addGold").value;
+        var operUser = "admin";
+        var operDetail = document.getElementById("operDetail").value;
+
+        if (!operUser) {
+            BUI.Message.Alert('非法操作', 'warning');
+            return ;
+        }
+
+        if (!isNull(userId) && !isNull(addGold) && parseInt(addGold) > 0) {
+            var data = {
+                userId: userId,
+                gold:  gold,
+                addGold: addGold,
+                operUser: operUser,
+                operDetail: operDetail
+            };
+
+            BUI.Message.Confirm('确认操作？', function () {
+                sendJquery('/page/player/addGold', data, 'POST', true, function (ret) {
+                    BUI.Message.Alert('操作成功', 'success');
+                    document.getElementById("gold").value = ret.gold;
+                    document.getElementById("addGold").value = 0;
+                    resultStore.load();
+                });
+            }, 'question');
+        } else {
+            BUI.Message.Alert('参数有误', 'warning');
+        }
+    }
+    function isNull(str) {
+        return !str || (typeof str == "undefined") || str == "";
+    }
+</script>
+<body>
+</html>

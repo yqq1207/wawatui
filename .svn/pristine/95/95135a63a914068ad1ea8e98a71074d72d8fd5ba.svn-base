@@ -1,0 +1,21 @@
+{
+  "name": "reyun",
+  "version": "1.0.0",
+  "dependencies": {
+    "urllib": "^2.17.0"
+  },
+  "description": "热云sdk接口封装",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "keywords": [
+    "热云",
+    "reyun"
+  ],
+  "author": "Hdy",
+  "license": "MIT"
+}

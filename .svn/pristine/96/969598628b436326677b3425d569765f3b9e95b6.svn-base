@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>仓库实物库存查询</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .number_1 {
+            width: 80px;
+        }
+        .bui-stdmod-body{
+        	overflow: auto;
+        }
+        #detailForm,#searchForm{
+        	padding-left: 20px;
+        	padding-top: 20px;
+        }
+        #searchForm .row{
+        	margin-top: 10px;
+        	display: inline-block;
+        }
+         #searchForm .span3{
+        	float: none;
+        	width: 200px;
+        	text-align: center;
+        }
+    </style>
+</head>
+<body>
+	<form id="searchForm" class="form-horizontal" >
+        <div class="row">
+            <div class="control-group  span9">
+                <label class="control-label"><s>*</s>事业部编号：</label>
+                <select name="deptNo" id="deptNo">
+                	<option value="1">编号1</option>
+                	<option value="2">编号2</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="control-group  span9">
+                <label class="control-label"><s>*</s>仓库编号：</label>
+                <select name="warehouseNo" id="warehouseNo">
+                	<option value="1">编号1</option>
+                	<option value="2">编号2</option>
+                </select>
+            </div>
+         </div>
+        <div class="row">
+            <div class="control-group  span9">
+                <label class="control-label">库存状态：</label>
+                <select name="stockStatus" id="stockStatus">
+                	<option value="1">良品</option> 
+                	<option value="2">残品</option>
+                	<option value="3">样品</option>
+                </select>
+            </div>
+         </div>
+        <div class="row">
+            <div class="control-group  span9">
+                <label class="control-label">库存类型：</label>
+                <select name="stockType" id="stockType">
+                	<option value="1">可销售</option> 
+                	<option value="2">待退品</option>
+                	<option value="3">商家预留</option>
+                	<option value="4">仓库锁定</option> 
+                	<option value="5">临期锁定</option>
+                	<option value="6">盘点锁定</option> 
+                	<option value="7">隔离库存 </option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+        	 <div class="control-group  span9">
+                <label class="control-label">主商品编号：</label>
+              <input type="text" id="goodsNo" name="goodsNo" />
+            </div>
+       	</div>
+       	<div class="row">
+        	 <div class="control-group  span9">
+                <label class="control-label">当前页：</label>
+              <input type="text" id="currentPage" name="currentPage" />
+            </div>
+       	</div>
+       	<div class="row">
+        	 <div class="control-group  span9">
+                <label class="control-label">每页记录数：</label>
+              <input type="text" id="pageSize" name="pageSize" />
+            </div>
+       	</div>
+        <div class="row span3">
+            <button type="button" id="btnSearch" class="button button-primary">搜索</button>
+        </div>
+        </div>
+    </form>
+<div class="row" >
+    <div class="span24">
+      <form name="" action="" method="post" id="detailForm">
+    
+        <h3>出库单详情</h3>   
+        <div class="row detail-row">
+          <div class="span10">
+          <label>事业部编号： </label><span class="detail-text" id="deptNo">deptNo</span>   
+          </div>
+          <div class="span10">
+          <label>事业部名称：</label><span class="detail-text" id="deptName">deptName</span>
+          </div>
+        </div>    
+        <div class="row detail-row">
+          <div class="span10">
+          <label>仓库编号：</label><span class="detail-text" id="warehouseNo">warehouseNo </span>
+          </div>
+          <div class="span10">
+            <label>仓库名称：</label><span class="detail-text" id="warehouseName">warehouseName </span>
+          </div>
+        </div>    
+        <div class="row detail-row">
+          <div class="span10">
+            <label>主商品编号：</label><span class="detail-text" id="goodsNo">goodsNo</span>
+          </div>
+          <div class="span10">
+            <label>	主商品名称：</label><span class="detail-text" id="goodsName">goodsName </span>
+          </div>
+        </div>    
+        <div class="row detail-row">
+          <div class="span10">
+            <label>商品商家标识 :</label><span class="detail-text" id="sellerGoodsSign">sellerGoodsSign</span>
+          </div>
+          <div class="span10">
+            <label >库存状态：</label><span class="detail-text" id="stockType">stockType</span>
+          </div>
+        </div>    
+        <div class="row detail-row">
+          <div class="span10">
+            <label>	库存类型：</label><span class="detail-text" id="createUser">createUser </span>
+          </div>
+          <div class="span10">
+            <label>商品总库存：</label><span class="detail-text" id="totalNum">totalNum </span>
+          </div>
+        </div>    
+        <div class="row detail-row">
+          <div class="span10">
+            <label>	可用库存 ：</label><span class="detail-text" id="usableNum">usableNum </span>
+          </div>
+          <div class="span10">
+            <label>预留字段1：</label><span class="detail-text" id="ext1">ext1 </span>
+          </div>
+        </div>  <div class="row detail-row">
+          <div class="span10">
+            <label>	预留字段1 ：</label><span class="detail-text" id="ext2">ext2 </span>
+          </div>
+          <div class="span10">
+            <label>预留字段1：</label><span class="detail-text" id="ext3">ext3 </span>
+          </div>
+        </div>  
+        <div class="row detail-row">
+          <div class="span10">
+            <label>	预留字段1 ：</label><span class="detail-text" id="ext4">ext4 </span>
+          </div>
+          <div class="span10">
+            <label>预留字段1：</label><span class="detail-text" id="ext5">ext5 </span>
+          </div>
+        </div>  
+      </form>
+    </div>
+  </div>
+
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script src="../../javascripts/utils.js"></script>
+
+<script type="text/javascript">
+	
+	$(function(){
+		$('#btnSearch').click(function(){
+			var deptNo = $('#deptNo').val(),
+			warehouseNo = $('#warehouseNo').val();
+			if (isNull(deptNo) || isNull(warehouseNo)) {
+                    BUI.Message.Alert('加红*的为必填项!', 'info');
+                    return ;
+           };
+           var formData = $("#searchForm").serialize();
+           console.log(formData)
+            searchQueryStock(formData, function(data) {
+                if (data.ErrorCode == 0) {
+                    BUI.Message.Alert('添加成功', 'info');
+                } else {
+                    BUI.Message.Alert('添加失败', 'info');
+                }
+            });
+			
+		});
+		function searchQueryStock(data,cb){
+			
+			sendJquery('/page/jd/searchQueryStock',data,'get',true,function(res){
+				cb(res)
+			})
+			
+		}
+	})
+	
+	
+</script>
+</body>
+</html>

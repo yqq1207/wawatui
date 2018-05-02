@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>退供应商下发</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .number_1 {
+            width: 80px;
+        }
+        .bui-stdmod-body{
+        	overflow: auto;
+        }
+        .isvRtsNum-box>label,.deptGoodsNo-box>label{
+        	width: 115px!important;
+        }
+        .isvRtsNum-box>.controls,.deptGoodsNo-box>.controls{
+        	margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="search-grid-container">
+    <div id="grid"></div>
+</div>
+<div class="container">
+	<!--退供应商下发-->
+    <div id="content" class="hide">
+        <form id="J_Form" class="form-horizontal">
+            <div class="row">
+                <div class="control-group span7  isvRtsNum-box">
+                    <label class="control-label"><s>*</s>ISV退供应商单号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="isvRtsNum" name="isvRtsNum" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>提货方式：</label>
+                    <div class="controls">
+                        <select name="deliveryMode" id="deliveryMode">
+                        	<option value="1">商家自提</option>
+                        	<option value="2">京东配送</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group span7 warehouseNo-box">
+                    <label class="control-label"><s>*</s>退库库房编号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="warehouseNo" name="warehouseNo" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7 deptGoodsNo-box">
+                    <label class="control-label"><s>*</s>事业部商品编号  ：</label>
+                    <div class="controls">
+                        <input type="text" name="deptGoodsNo" id="deptGoodsNo" />
+                    </div>
+                </div>
+                 <div class="control-group span7 deptGoodsNo-box">
+                    <label class="control-label">事业部商品名称：</label>
+                    <div class="controls">
+                        <input type="text" name="goodsName" id="goodsName" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>申请退货数量：</label>
+                    <div class="controls">
+                        <input type="text" id="quantity" name="quantity" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">实际退货数量：</label>
+                    <div class="controls">
+                        <input type="text" id="realQuantity" name="realQuantity" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">商品状态 ：</label>
+                    <div class="controls">
+                        <select class="input-middle" id="rtsType" name="rtsType" >
+                        	<option value="1">良品 </option>
+                        	<option value="2">残品</option>
+                        	<option value="3">样品</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label" style="width: 132px;">开放平台退供应商单号：</label>
+                    <div class="controls" style="width: 120px;margin-left: 0;">
+                        <input type="text" class="input-middle" id="eclpRtsNo" name="eclpRtsNo" style="width: 126px;"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">单据类型 ：</label>
+                    <div class="controls">
+                        <select class="input-middle" id="rtsType" name="rtsType" >
+                        	<option value="1">良品 </option>
+                        	<option value="2">残品</option>
+                        	<option value="4">临期品</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">事业部编号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="deptNo" name="deptNo" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">供应商编号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="supplierNo" name="supplierNo" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">收货人姓名 ：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="receiver" name="receiver" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">收货人电话 ：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="receiverPhone " name="receiverPhone " />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">电子邮件：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="email" name="email" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">省：</label>
+                    <div class="controls">
+                    	<select name="province" id="province">
+                        	<option value="1">北京</option>
+                        	<option value="2">上海</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">市：</label>
+                    <div class="controls">
+						<select name="city" id="city">
+                        	<option value="1">北京</option>
+                        	<option value="2">上海</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">县：</label>
+                    <div class="controls">
+                        <select name="county" id="county">
+                        	<option value="1">通州</option>
+                        	<option value="2">朝阳</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">镇：</label>
+                    <div class="controls">
+                        <select name="county" id="county">
+                        	<option value="1">通州</option>
+                        	<option value="2">朝阳</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">收货人地址信息：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="address" name="address" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">创建人 ：</label>
+                    <div class="controls">
+                        <input type="email" class="input-middle" id="createUser" name="createUser" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label" style="width: 115px;">是否按款/sku装箱 ：</label>
+                    <div class="controls">
+                       <input type="radio" name="packFlag" id="packFlag" value="1" checked="true"/>是
+                        <input type="radio" name="packFlag" id="packFlag" value="0"/>否
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--退供应商取消-->
+    <div id="content1" class="hide">
+        <form id="J_Form1" class="form-horizontal">
+            <div class="row">
+            	<div class="control-group span7">
+                    <label class="control-label" style="width: 145px;margin-left: -12px;"><s>*</s>开放平台退供应商单号：</label>
+                    <div class="controls" style="width: 120px;margin-left: 0;">
+                        <input type="text" class="input-middle" id="eclpRtsNo1" name="eclpRtsNo1" style="width: 126px;"/>
+                    </div>
+                </div>
+                <div class="control-group span7  isvRtsNum-box">
+                    <label class="control-label">ISV退供应商单号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="isvRtsNum1" name="isvRtsNum1" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">提货方式：</label>
+                    <div class="controls">
+                        <select name="deliveryMode1" id="deliveryMode1">
+                        	<option value="1">商家自提</option>
+                        	<option value="2">京东配送</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7 warehouseNo-box">
+                    <label class="control-label">退库库房编号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="warehouseNo1" name="warehouseNo1" />
+                    </div>
+                </div>
+           
+                <div class="control-group span7 deptGoodsNo-box">
+                    <label class="control-label"><s>*</s>事业部商品编号  ：</label>
+                    <div class="controls">
+                        <input type="text" name="deptGoodsNo1" id="deptGoodsNo1" />
+                    </div>
+                </div>
+                 <div class="control-group span7 deptGoodsNo-box">
+                    <label class="control-label">事业部商品名称：</label>
+                    <div class="controls">
+                        <input type="text" name="goodsName1" id="goodsName1" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label"><s>*</s>申请退货数量：</label>
+                    <div class="controls">
+                        <input type="text" id="quantity1" name="quantity1" />
+                    </div>
+                </div>
+           
+                <div class="control-group span7">
+                    <label class="control-label">实际退货数量：</label>
+                    <div class="controls">
+                        <input type="text" id="realQuantity1" name="realQuantity1" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">商品状态 ：</label>
+                    <div class="controls">
+                        <select class="input-middle" id="rtsType1" name="rtsType1" >
+                        	<option value="1">良品 </option>
+                        	<option value="2">残品</option>
+                        	<option value="3">样品</option>
+                        </select>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">事业部编号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="deptNo1" name="deptNo1" />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">供应商编号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="supplierNo1" name="supplierNo1" />
+                    </div>
+                </div>
+            
+                <div class="control-group span7">
+                    <label class="control-label">收货人姓名 ：</label>
+                    <div class="controls">
+                        <input type="number" class="input-middle" id="receiver1" name="receiver1" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">收货人电话 ：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="receiverPhone1 " name="receiverPhone1 " />
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">电子邮件：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="email1" name="email1" />
+                    </div>
+                </div>
+            
+                <div class="control-group span7">
+                    <label class="control-label">省：</label>
+                    <div class="controls">
+                    	<select name="province1" id="province1">
+                        	<option value="1">北京</option>
+                        	<option value="2">上海</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">市：</label>
+                    <div class="controls">
+						<select name="city1" id="city1">
+                        	<option value="1">北京</option>
+                        	<option value="2">上海</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group span7">
+                    <label class="control-label">县：</label>
+                    <div class="controls">
+                        <select name="county1" id="county1">
+                        	<option value="1">通州</option>
+                        	<option value="2">朝阳</option>
+                        </select>
+                    </div>
+                </div>
+            
+                <div class="control-group span7">
+                    <label class="control-label">镇：</label>
+                    <div class="controls">
+                        <select name="county1" id="county1">
+                        	<option value="1">通州</option>
+                        	<option value="2">朝阳</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span7">
+                    <label class="control-label">收货地址：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="address1" name="address1" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--退供应商取消-->
+    
+</div>
+
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script src="../../javascripts/utils.js"></script>
+
+<script type="text/javascript">
+    BUI.use(['common/search', 'common/page', 'bui/overlay'], function (Search, Page, Overlay) {
+        var columns = [
+            {title: 'ISV退供应商单号 ', dataIndex: 'isvRtsNum', width: 120},
+            {title: 'ISV来源编号', dataIndex: 'deliveryMode', width: 100},
+            {title: '店铺编号', dataIndex: 'warehouseNo', width: 100},
+            {title: '事业部编号 ', dataIndex: 'deptGoodsNo', width: 100},
+            {title: '销售平台来源', dataIndex: 'quantity', width: 120},
+            {
+				title: '操作', dataIndex: '', width: 200, renderer: function (value, obj) {
+					var 
+					editStr = '<span class="grid-command btn-del" title="退供应商取消">退供应商取消</span>',
+                    delStr = '<span class="grid-command btn-edi" title="退供应商查询">退供应商查询</span>';//页面操作不需要使用Search.createLink
+                    return  editStr + delStr;
+                }
+            }
+        ];
+
+        var store = Search.createStore("getTranGoodsInfo", {
+            autoSync: true
+        });
+
+        var gridCfg = Search.createGridCfg(columns, {
+            tbar: {
+                items: [
+                    {
+                        text: '<i class="icon-check"></i>采购入库单下发',
+                        btnCls: 'button button-small',
+                        handler: isvRtsTransfer
+                    },
+                    {
+                        text: '<i class="icon-check"></i>同步主商品信息',
+                        btnCls: 'button button-small',
+//                      handler: isvRtsQuery
+                    },
+                ]
+            },
+            plugins: [BUI.Grid.Plugins.CheckSelection]
+        });
+
+        var search = new Search({
+            store: store,
+            gridCfg: gridCfg
+        });
+//		退供应商下发
+        var dialog = new Overlay.Dialog({
+            title: '退供应商下发',
+            width: 900,
+            height: 500,
+            mask: true,
+            contentId: 'content',
+            success: function () {
+                var isvRtsNum = $('#isvRtsNum').val();
+                var deliveryMode = $('#deliveryMode').val();
+                var warehouseNo = $('#warehouseNo').val();
+                var deptGoodsNo = $('#deptGoodsNo').val();
+                var quantity = $('#quantity').val();
+
+                if (isNull(isvRtsNum) || isNull(deliveryMode) || isNull(warehouseNo) || isNull(deptGoodsNo) || isNull(quantity)) {
+                    BUI.Message.Alert('加红*的为必填项!', 'info');
+                    return ;
+                }
+
+                var formData = $("#J_Form").serialize();
+                getIsvRtsTransfer(formData, function(data) {
+                    if (data.ErrorCode == 0) {
+                        BUI.Message.Alert('下发成功', 'info');
+                    } else {
+                        BUI.Message.Alert('下发失败', 'info');
+                    }
+                })
+            }
+        });
+        
+//      退供应商取消
+        var dialog1 = new Overlay.Dialog({
+            title: '退供应商取消',
+            width: 900,
+            height: 500,
+            mask: true,
+            contentId: 'content1',
+            success: function () {
+                var eclpRtsNo = $('#eclpRtsNo1').val();
+
+                if (isNull(eclpRtsNo)) {
+                    BUI.Message.Alert('加红*的为必填项!', 'info');
+                    return ;
+                }
+
+                var formData = $("#J_Form1").serialize();
+                console.log(formData);
+                console.log(this.title);
+                saveIsvRtsCancel(formData, function(data) {
+                    if (data.ErrorCode == 0) {
+                        BUI.Message.Alert('添加成功', 'info');
+                    } else {
+                        BUI.Message.Alert('添加失败', 'info');
+                    }
+                })
+            }
+        });
+        
+//      退供应商查询
+        var dialog2 = new Overlay.Dialog({
+            title: '退供应商查询',
+            width: 900,
+            height:500,
+            mask: true,
+            contentId: 'content1',
+            success: function () {
+                var eclpRtsNo = $('#eclpRtsNo1').val();
+                if (isNull(eclpRtsNo)) {
+                    BUI.Message.Alert('加红*的为必填项!', 'info');
+                    return ;
+                }
+
+                var formData = $("#J_Form1").serialize();
+                getIsvRtsQuery(formData, function(data) {
+                    if (data.ErrorCode == 0) {
+//                  	查询成功
+						
+                        BUI.Message.Alert('查询成功', 'info');
+                    } else {
+                    	
+                        BUI.Message.Alert('查询失败', 'info');
+                    }
+                })
+            }
+        });
+
+        var grid = search.get('grid');
+
+		//		监控操作部分的点击事件
+		grid.on('cellclick', function (ev) {
+            var sender = $(ev.domTarget); //点击的Dom
+            var record = ev.record;
+            if (sender.hasClass('btn-edi')) {
+            	//退供应商查询
+            	alert('退供应商查询');
+            	
+            	isvRtsQuery();
+            } else if(sender.hasClass('btn-del')){
+            	//退供应商取消
+            	alert('退供应商取消');
+            	isvRtsCancel();
+            }
+        });
+
+
+//		退供应商下发
+        function isvRtsTransfer() {
+            
+            dialog.show();
+
+        };
+
+       	
+//     	退供应商取消
+		function isvRtsCancel(){
+			dialog1.set('title', '退供应商取消');
+			$('#queryOrderStatus').text('需要展示的内容，是否出库')
+			dialog1.show();
+		};
+		
+		
+		
+//		退供应商查询
+		function isvRtsQuery(){
+			dialog2.set('title', '退供应商查询');
+			dialog2.show();
+		}
+
+
+
+    });
+
+// 	退供应商下发数据获取     
+	function getIsvRtsTransfer(data,cb){
+		sendJquery('/page/jd/isvRtsTransfer?'+data, null, 'GET', false, function(ret) {
+            cb(ret);
+        })
+	};
+//     	退供应商取消数据
+	function saveIsvRtsCancel(data,cb){
+		sendJquery('/page/jd/isvRtsCancel', data, 'POST', false, function(ret) {
+            cb(ret);
+        })
+	}
+
+//		退供应商查询数据
+	function getIsvRtsQuery(data,cb){
+		sendJquery('/page/jd/IsvRtsQuery?'+data, null, 'GET', false, function(ret) {
+            cb(ret);
+        })
+	}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>退货入库单下发</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .number_1 {
+            width: 80px;
+        }
+        .form-horizontal .control-label{
+        	width: 170px;
+        }
+    </style>
+</head>
+<body>
+<div class="search-grid-container">
+    <div id="grid"></div>
+</div>
+<div class="container">
+    <div id="content" class="hide">
+        <form id="J_Form" class="form-horizontal">
+            <div class="row">
+                <div class="control-group span10">
+                    <label class="control-label"><s>*</s>开放平台出库订单号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="eclpSoNo" name="eclpSoNo" />
+                    </div>
+                </div>
+                <div class="control-group span10">
+                    <label class="control-label">开放平台退货入库单号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" name="eclpRtwNo" id="eclpRtwNo" />
+                    </div>
+                </div>
+            </div>
+           	<div class="row">
+                <div class="control-group span10">
+                    <label class="control-label">isv退货入库单号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="isvRtwNum" name="isvRtwNum" />
+                    </div>
+                </div>
+            
+                <div class="control-group span10">
+                    <label class="control-label">入库库房编号：</label>
+                    <div class="controls">
+                    	<input type="text" class="input-middle" id="warehouseNo" name="warehouseNo" />
+                    </div>
+                </div>
+            </div>
+           	<div class="row">
+                <div class="control-group span10">
+                    <label class="control-label">退货入库原因：</label>
+                    <div class="controls">
+                       <input type="text" class="input-middle" id="reson" name="reson" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script src="../../javascripts/utils.js"></script>
+
+<!-- script start -->
+<script type="text/javascript">
+    BUI.use(['common/search', 'common/page', 'bui/overlay'], function (Search, Page, Overlay) {
+        var columns = [
+            {title: '开放平台出库订单号 ', dataIndex: 'eclpSoNo', width: 200},
+            {title: '开放平台退货入库单号 ', dataIndex: 'eclpRtwNo', width: 200},
+            {title: 'isv退货入库单号', dataIndex: 'isvRtwNum', width: 200},
+            {title: '入库库房编号', dataIndex: 'warehouseNo', width: 200},
+            {title: '退货入库原因', dataIndex: 'reson', width: 220},
+            {
+                title: '操作', width: 400, renderer: function (value, obj) {
+                    var editStr = Search.createLink({
+                        id: 'edit_' + obj.id,
+                        title: '查看详细信息',
+                        text: '【编辑】',
+                        href: 'page/jd/sinTranGoodsInfo.html?id=' + obj.id
+                    });
+                    return editStr;
+                }
+            }
+        ];
+
+        var store = Search.createStore("getTranGoodsInfo", {
+            autoSync: true
+        });
+
+        var gridCfg = Search.createGridCfg(columns, {
+            tbar: {
+                items: [
+                    {
+                        text: '<i class="icon-check"></i>退货入库单下发',
+                        btnCls: 'button button-small',
+                        handler: addTranGoodsInfo
+                    },
+                    {
+                        text: '<i class="icon-check"></i>同步退货入库单信息',
+                        btnCls: 'button button-small',
+                        handler: asyncTranGoodsInfo
+                    },
+                ]
+            },
+            plugins: [BUI.Grid.Plugins.CheckSelection]
+        });
+
+        var search = new Search({
+            store: store,
+            gridCfg: gridCfg
+        });
+
+        var dialog = new Overlay.Dialog({
+            title: '添加主商品信息',
+            width: 440,
+            height: 280,
+            mask: true,
+            contentId: 'content',
+            success: function () {
+                var eclpSoNo = $('#eclpSoNo').val();
+               
+                if (isNull(eclpSoNo)) {
+                    BUI.Message.Alert('加红*的为必填项!', 'info');
+                    return ;
+                }
+
+                var formData = $("#J_Form").serialize();
+                transportRtw(formData, function(data) {
+                    if (data.ErrorCode == 0) {
+                        BUI.Message.Alert('添加成功', 'info');
+                    } else {
+                        BUI.Message.Alert('添加失败', 'info');
+                    }
+                })
+            }
+        });
+
+        var grid = search.get('grid');
+
+
+        function addTranGoodsInfo() {
+            
+            dialog.show();
+        }
+
+        function asyncTranGoodsInfo() {
+            BUI.Message.Message('暂不提供该功能', 'info');
+        }
+    });
+
+/**
+ * 添加退货入库单
+ * @param {Object} data
+ * @param {Object} cb
+ */
+    function transportRtw(data, cb) {
+        sendJquery('/page/jd/transportRtw', data, 'get', false, function(ret) {
+            cb(ret);
+        });
+    }
+</script>
+</body>
+</html>

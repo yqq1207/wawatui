@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>主商品详情信息</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+    </style>
+</head>
+<body onload="load()">
+    <div class="container">
+        <form id="searchForm" class="form-horizontal">
+            <input type="hidden" name="poOrderNo" id="poOrderNo" />
+        </form>
+        <div class="search-grid-container">
+            <div id="grid"></div>
+        </div>
+    </div>
+<body>
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script src="../../javascripts/utils.js"></script>
+<script type="text/javascript">
+
+    function load() {
+        var thisURL = document.URL;
+        var getVal = thisURL.split('?')[1];
+        var poOrderNo = getVal.split("=")[1];
+
+        if (poOrderNo) {
+            setData(poOrderNo);
+            showGrid();
+        }
+    };
+
+    function setData(poOrderNo) {
+        $('#poOrderNo').val(poOrderNo);
+    };
+
+    function showGrid() {
+        BUI.use(['common/search', 'common/page', 'bui/overlay', 'bui/grid'], function (Search, Page, Overlay, Grid) {
+
+            var innerColumns = [
+                {title: '事业部商品编号', dataIndex: 'goodsNo', width: 120},
+                {title: '申请入库数量', dataIndex: 'numApplication', width: 120},
+                {title: 'expiredQty', dataIndex: 'expiredQty', width: 120},
+                {title: 'otherQty', dataIndex: 'otherQty', width: 120},
+                {title: 'shortQty', dataIndex: 'shortQty', width: 120},
+                {title: 'emptyQty', dataIndex: 'emptyQty', width: 120},
+                {title: 'realInstoreQty', dataIndex: 'realInstoreQty', width: 120},
+                {title: 'goodsStatus', dataIndex: 'goodsStatus', width: 120},
+            ];
+
+            // 实例化 Grid.Plugins.Cascade 插件
+            var cascade = new Grid.Plugins.Cascade({
+                    renderer: function (record) {
+                        return '<div class="inner-grid"></div>';	//生成简单表格的容器
+                    }
+                }),
+                //简单表格的配置信息
+                simpleGridConfig = {
+                    autoRender: true,                 //自动生成
+                    columns: innerColumns
+                };
+
+            cascade.on('expand', function (ev) {
+                var data = ev.record,
+                    row = ev.row,
+                    sgrid = $(row).data('sub-grid');
+                if (!sgrid) {
+                    var container = $(row).find('.inner-grid'),
+                        gridConfig = BUI.cloneObject(simpleGridConfig);
+                    gridConfig.render = container;
+
+                    sgrid = new Grid.SimpleGrid(gridConfig);
+                    sgrid.showData(data.records);
+                    $(row).data('sub-grid', sgrid);
+                }
+            });
+
+            cascade.on('removed', function (ev) {
+                var data = ev.record,
+                    row = ev.row,
+                    sgrid = $(row).data('sub-grid');
+                if (sgrid) {
+                    sgrid.destroy();
+                }
+            });
+
+            var columns = [
+                {title: '采购入库单号', dataIndex: 'poOrderNo', width: 120},
+                {title: '外部采购订单号', dataIndex: 'isvPoOrderNo', width: 120},
+                {title: '采购入库单状态', dataIndex: 'poOrderStatus', width: 100},
+                {title: '供应商编号', dataIndex: 'supplierNo', width: 120},
+                {title: '事业部编号 ', dataIndex: 'deptNo', width: 120},
+                {title: '入库库房编号', dataIndex: 'whNo', width: 120},
+                {title: '创建者', dataIndex: 'createUser', width: 100},
+                {title: '创建时间', dataIndex: 'createTime', width: 120}
+            ];
+
+            var store = Search.createStore("getOpOrderInfo", {
+                autoSync: true
+            });
+
+            var gridCfg = Search.createGridCfg(columns, {
+                tbar: {
+                    items: []
+                },
+                plugins: [BUI.Grid.Plugins.CheckSelection, cascade]
+            });
+
+            var search = new Search({
+                store: store,
+                gridCfg: gridCfg
+            });
+
+            var grid = search.get('grid');
+        });
+    }
+
+</script>
+</html>

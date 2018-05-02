@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>采购入库单管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .form-horizontal .control-label {
+            width: 120px;
+        }
+
+        .blueStar {
+            color: blue;
+        }
+
+        .inner-grid {
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="search-grid-container">
+    <div id="grid"></div>
+</div>
+<div class="container">
+    <div id="content" class="hide">
+        <form id="J_Form" class="form-horizontal">
+            <h3>单值信息</h3>
+            <div class="row">
+                <div class="control-group span9">
+                    <label class="control-label"><s>*</s>外部采购订单号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="spPoOrderNo" name="spPoOrderNo"/>
+                    </div>
+                </div>
+                <div class="control-group span9">
+                    <label class="control-label"><s>*</s>事业部编码：</label>
+                    <div class="controls">
+                        <select id="deptNo" name="deptNo">
+                            <option value="">请选择</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span9">
+                    <label class="control-label"><s>*</s>供应商编号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="supplierNo" name="supplierNo" disabled></select>
+                    </div>
+                </div>
+                <div class="control-group span9">
+                    <label class="control-label"><s>*</s>入库库房编号：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="whNo" name="whNo" disabled/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span9">
+                    <label class="control-label">单据类型：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" id="billType" name="billType"/>
+                    </div>
+                </div>
+                <div class="control-group span9">
+                    <label class="control-label">回传方式：</label>
+                    <div class="controls">
+                        <select name="poReturnMode" id="poReturnMode">
+                            <option value="">不选</option>
+                            <option value="1">按单</option>
+                            <option value="2">按板</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span9">
+                    <label class="control-label">质检比例：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" name="qualityCheckRate" id="qualityCheckRate"/>
+                    </div>
+                </div>
+                <div class="control-group span9">
+                    <label class="control-label">大字段(物流云专用)：</label>
+                    <div class="controls">
+                        <input type="text" class="input-middle" name="customsInfo" id="customsInfo"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="control-group span9">
+                    <label class="control-label">按箱收货：</label>
+                    <div class="controls">
+                        <input type="radio" name="boxFlag" id="aboxFlag_1"/>是
+                        <input type="radio" name="boxFlag" id="boxFlag_2"/>否
+                    </div>
+                </div>
+                <div class="control-group span9">
+                    <label class="control-label">不合格验收：</label>
+                    <div class="controls">
+                        <input type="radio" name="acceptUnQcFlag" id="acceptUnQcFlag_1"/>是
+                        <input type="radio" name="acceptUnQcFlag" id="acceptUnQcFlag_2"/>否
+                    </div>
+                </div>
+            </div>
+            <hr/>
+
+            <h3>多值信息</h3>
+            <div class="row">
+                <div class="span21 control-row-auto">
+                    <div id="grid1"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script src="../../javascripts/utils.js"></script>
+
+<script type="text/javascript">
+    var store1 = null;
+
+    BUI.use(['common/search', 'common/page', 'bui/overlay', 'bui/grid'], function (Search, Page, Overlay, Grid) {
+        var status = {1: "良品", 2: "残品", 3: "样品"};
+        var barCodeType = {"1": "申请贴码", "2": "商家自贴", "3": "仓库补贴"};
+        var sidCheckout = {"0": "否", "1": "是"};
+
+        var innerColumns = [
+            {title: '采购入库单号', dataIndex: 'poOrderNo', width: 120},
+            {title: '事业部商品编号', dataIndex: 'deptGoodsNo', width: 120},
+            {title: '申请入库数量', dataIndex: 'numApplication', width: 120},
+            {title: '商品状态', dataIndex: 'goodsStatus', width: 120, renderer: BUI.Grid.Format.enumRenderer(status)},
+            {title: '箱商品编号', dataIndex: 'boxGoodsNo', width: 120},
+            {title: '箱号', dataIndex: 'boxNo', width: 120},
+            {title: '箱商品申请入库数量', dataIndex: 'boxGoodsQty', width: 120},
+            {title: '序列号段', dataIndex: 'boxSerialNo', width: 120},
+            {title: '代贴条码', dataIndex: 'barCodeType ', width: 120, renderer: BUI.Grid.Format.enumRenderer(barCodeType)},
+            {
+                title: '序列号校验入库',
+                dataIndex: 'sidCheckout ',
+                width: 120,
+                renderer: BUI.Grid.Format.enumRenderer(sidCheckout)
+            },
+        ];
+
+        // 实例化 Grid.Plugins.Cascade 插件
+        var cascade = new Grid.Plugins.Cascade({
+                renderer: function (record) {
+                    return '<div class="inner-grid"></div>';	//生成简单表格的容器
+                }
+            }),
+            //简单表格的配置信息
+            simpleGridConfig = {
+                autoRender: true,                 //自动生成
+                columns: innerColumns
+            };
+
+        cascade.on('expand', function (ev) {
+            var data = ev.record,
+                row = ev.row,
+                sgrid = $(row).data('sub-grid');
+            if (!sgrid) {
+                var container = $(row).find('.inner-grid'),
+                    gridConfig = BUI.cloneObject(simpleGridConfig);
+                gridConfig.render = container;
+
+                sgrid = new Grid.SimpleGrid(gridConfig);
+                sgrid.showData(data.records);
+                $(row).data('sub-grid', sgrid);
+            }
+        });
+
+        cascade.on('removed', function (ev) {
+            var data = ev.record,
+                row = ev.row,
+                sgrid = $(row).data('sub-grid');
+            if (sgrid) {
+                sgrid.destroy();
+            }
+        });
+
+        var acceptUnQcFlag = {"0": "不支持", "1": "支持"};
+        var boxFlag = {"0": "否", "1": "是"};
+        var poReturnMode = {"1": "按单", "2": "按板"};
+
+        var columns = [
+            {title: '采购入库单号', dataIndex: 'poOrderNo', width: 120},
+            {title: '外部采购订单号 ', dataIndex: 'spPoOrderNo', width: 120},
+            {title: '事业部编号 ', dataIndex: 'deptNo', width: 120},
+            {title: '入库库房编号', dataIndex: 'whNo', width: 90},
+            {title: '供应商编号', dataIndex: 'supplierNo', width: 120},
+            {title: '单据类型', dataIndex: 'billType', width: 100},
+            {
+                title: '不合格验收',
+                dataIndex: 'acceptUnQcFlag',
+                width: 80,
+                renderer: BUI.Grid.Format.enumRenderer(acceptUnQcFlag)
+            },
+            {title: '按箱收货', dataIndex: 'boxFlag', width: 80, renderer: BUI.Grid.Format.enumRenderer(boxFlag)},
+            {title: '回传方式', dataIndex: 'poReturnMode', width: 80, renderer: BUI.Grid.Format.enumRenderer(poReturnMode)},
+            {title: '大字段', dataIndex: 'customsInfo', width: 120},
+            {title: '质检比例', dataIndex: 'qualityCheckRate', width: 120},
+            {
+                title: '操作', width: 400, renderer: function (value, obj) {
+                var editStr = Search.createLink({
+                    id: 'edit_' + obj.id,
+                    title: '采购入库单详情',
+                    text: '【详情】',
+                    href: '../page/jd/sinOpOrder.html?poOrderNo=' + obj.poOrderNo
+                });
+                return editStr;
+            }
+            }
+        ];
+
+        var store = Search.createStore("getpoOrderInfo", {
+            autoSync: true
+        });
+
+        var gridCfg = Search.createGridCfg(columns, {
+            tbar: {
+                items: [
+                    {
+                        text: '<i class="icon-check"></i>采购入库单下发',
+                        btnCls: 'button button-small',
+                        handler: addpoOrder
+                    },
+                    {
+                        text: '<i class="icon-check"></i>采购入库单取消',
+                        btnCls: 'button button-small',
+                        handler: cancelpoOrder
+                    }
+                ]
+            },
+            plugins: [BUI.Grid.Plugins.CheckSelection, cascade]
+        });
+
+        var search = new Search({
+            store: store,
+            gridCfg: gridCfg
+        });
+
+        var grid = search.get('grid');
+
+        var dialog = new Overlay.Dialog({
+            title: '采购入库单下发',
+            width: 850,
+            height: 700,
+            mask: true,
+            contentId: 'content',
+            success: function () {
+                var spPoOrderNo = $('#spPoOrderNo').val();
+                var deptNo = $('#deptNo').val();
+                var supplierNo = $('#supplierNo').val();
+                var whNo = $('#whNo').val();
+
+                if (isNull(spPoOrderNo) || isNull(supplierNo) || isNull(whNo) || isNull(deptNo)) {
+                    BUI.Message.Alert('加红*的为必填项!', 'info');
+                    return;
+                }
+
+                var formData = $("#J_Form").serialize();
+
+                var records = store1.getResult();
+
+                formData = formData + "&supplierNo=" + $('#supplierNo').val();
+                formData = formData + "&whNo=" + $('#whNo').val();
+
+                var postData = {
+                    base: formData,
+                    records: JSON.stringify(records)
+                }
+                savepoOrderInfo(postData, function (data) {
+                    if (data.ErrorCode == 0) {
+                        BUI.Message.Alert('添加成功', 'info');
+                    } else {
+                        BUI.Message.Alert('添加失败', 'info');
+                    }
+                })
+            }
+        });
+
+        function addpoOrder() {
+            getDeptNo(function (data) {
+                if (data && data.length > 0) {
+                    var obj = document.getElementById("deptNo");
+
+                    for (var i = 0; i < data.length; i++) {
+                        obj.options.add(new Option(data[i].deptNo, data[i].deptNo));
+                    }
+                }
+            });
+            dialog.show();
+        }
+
+        function cancelpoOrder() {
+            var selections = grid.getSelection();
+            var ids = [];
+
+            BUI.each(selections, function (item) {
+                ids.push(item.poOrderNo);
+            });
+
+            if (ids.length) {
+                ids = JSON.stringify(ids);
+                BUI.Message.Confirm('确认要删除选中的记录么？', function () {
+                    sendJquery('/page/jd/cancelpoOrderInfo', {ids: ids}, 'POST', true, function (data) {
+                        if (data.ErroCode == 0) {
+                            search.load();
+                        } else {
+                            BUI.Message.Alert('取消失败！');
+                        }
+                    });
+                }, 'question');
+            }
+        }
+
+    });
+
+    BUI.use(['bui/grid', 'bui/data', 'bui/form'], function (Grid, Data, Form) {
+        getGoodsNo(function (data) {
+            var enumObj = {};
+
+            if (data && data.length > 0) {
+                for (var i = 0; i < data.length; i++) {
+                    enumObj[data[i].goodsNo] = data[i].goodsName + "-" + data[i].goodsNo;
+                }
+            }
+
+            var status = {"1": "良品", "2": "残品", "3": "样品"};
+            //增加记录数组表格
+            var columns = [
+                {
+                    title: '事业部商品编号',
+                    dataIndex: 'deptGoodsNo',
+                    width: 150,
+                    editor: {id: 'mySelect', xtype: 'select', items: enumObj, rules: {required: true}},
+                    renderer: Grid.Format.enumRenderer(enumObj)
+                },
+                {
+                    title: '申请入库数量',
+                    dataIndex: 'numApplication',
+                    width: 100,
+                    editor: {xtype: 'number', rules: {required: true}}
+                },
+                {
+                    title: '商品状态',
+                    dataIndex: 'goodsStatus',
+                    width: 80,
+                    editor: {id: 'mySelect1', xtype: 'select', items: status, rules: {required: true}}
+                },
+                {title: '序列号段', dataIndex: 'boxSerialNo', width: 100, editor: {xtype: 'text'}},
+                {title: '代贴条码', dataIndex: 'barCodeType', width: 100, editor: {xtype: 'text'}},
+                {title: '序列号校验', dataIndex: 'sidCheckout', width: 100, editor: {xtype: 'text'}},
+                {title: '箱号', dataIndex: 'boxNo', width: 100, editor: {xtype: 'text'}},
+                {title: '箱商品编号', dataIndex: 'boxGoodsNo', width: 100, editor: {xtype: 'text'}},
+                {title: '箱商品申请入库数', dataIndex: 'boxGoodsQty', width: 150, editor: {xtype: 'text'}}
+            ];
+
+            var data = [];
+
+            store1 = new Data.Store({
+                data: data
+            }),
+                editing = new Grid.Plugins.CellEditing(),
+                grid1 = new Grid.Grid({
+                    render: '#grid1',
+                    columns: columns,
+                    width: 800,
+                    height: 300,
+                    forceFit: true,
+                    store: store1,
+                    plugins: [Grid.Plugins.CheckSelection, editing],
+                    tbar: {
+                        items: [{
+                            btnCls: 'button button-small',
+                            text: '<i class="icon-plus"></i>添加',
+                            listeners: {
+                                'click': addFunction
+                            }
+                        },
+                            {
+                                btnCls: 'button button-small',
+                                text: '<i class="icon-remove"></i>删除',
+                                listeners: {
+                                    'click': delFunction
+                                }
+                            }]
+                    }
+
+                });
+
+            grid1.render();
+
+            function addFunction() {
+                var newData = {deptGoodsNo: '请选择商品编号'};
+                store1.add(newData);
+                editing.edit(newData, 'deptGoodsNo'); //添加记录后，直接编辑
+            }
+
+            function delFunction() {
+                var selections = grid.getSelection();
+                store1.remove(selections);
+            }
+
+            var form = new Form.HForm({
+                srcNode: '#J_Form'
+            });
+            form.render();
+
+            form.on('beforesubmit', function () {
+                if (!editing.isValid()) {
+                    return false;
+                }
+            });
+        });
+
+    });
+
+    function getDeptNo(cb) {
+        sendJquery('/page/jd/getDeptNo', null, 'GET', false, function (data) {
+            cb(data);
+        })
+    }
+
+    function getSupplier(cb) {
+        sendJquery('/page/jd/querySupplier', null, 'GET', false, function (data) {
+            cb(data);
+        })
+    }
+
+    function getGoodsNo(cb) {
+        sendJquery('/page/jd/getTranGoodsNo', null, 'GET', false, function (data) {
+            cb(data);
+        })
+    }
+
+    function savepoOrderInfo(data, cb) {
+        sendJquery('/page/jd/savepoOrderInfo', data, 'POST', false, function (ret) {
+            cb(ret);
+        })
+    }
+
+
+    $('#deptNo').change(function () {
+        var deptNo = $(this).find('option:checked').val();
+
+        sendJquery('/page/jd/querySupplier?deptNo=' + deptNo, null, 'GET', false, function (ret) {
+            if (ret) {
+                var data = ret.rows;
+
+                if (data && data.length > 0) {
+                    $('#supplierNo').val(data[0].eclpSupplierNo);
+                    $('#supplierNo').attr('title', data[0].supplierName);
+                } else {
+                    $('#supplierNo').val('');
+                }
+            }
+        });
+        sendJquery('/page/jd/queryWarehouse?deptNo=' + deptNo, null, 'GET', false, function (ret) {
+            if (ret) {
+                var data = ret.rows;
+                if (data && data.length > 0) {
+                    $('#whNo').val(data[0].warehouseNo);
+                    $('#whNo').attr('title', data[0].warehouseName);
+                } else {
+                    $('#whNo').val('');
+                }
+            }
+        })
+    });
+
+</script>
+</body>
+</html>

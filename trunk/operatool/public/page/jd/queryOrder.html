@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>销售出库单详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <style type="text/css">
+        .number_1 {
+            width: 80px;
+        }
+        .bui-stdmod-body{
+        	overflow: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="row" style="padding-left: 20px;padding-top: 20px;">
+    <div class="span24">
+      <!-- 包含grid的详情页 ================================================== -->
+      <h2>包含grid的详情页</h2>
+      <hr>
+      <form name="" action="" method="post" id="detailForm">
+    
+        <h3>出库单详情</h3>   
+        <div class="row detail-row">
+          <div class="span8">
+          <label>eclpSoNo： </label><span class="detail-text">开放平台出库单号</span>   
+          </div>
+          <div class="span8">
+          <label>orderMark：	</label><span class="detail-text">订单标记位</span>
+          </div>
+          <div class="span8">
+          <label>addressCounty：</label><span class="detail-text">	收货人县</span>
+          </div>
+        </div>    
+        <div class="row detail-row">
+          <div class="span8">
+            <label>wayBill：</label><span class="detail-text">快递单号 </span>
+          </div>
+          <div class="span8">
+            <label>splitEclpSoNos：</label><span class="detail-text">子单订单号集合,多个以逗号隔开</span>
+          </div>
+          <div class="span8">
+            <label>departmentNo：</label><span class="detail-text">所属事业部编号 </span>
+          </div>
+        </div>    
+        <div class="row detail-row">
+          <div class="span8">
+            <label>pinAccount</label><span class="detail-text">下单人（操作人）</span>
+          </div>
+          <div class="span8">
+            <label >shipperName：</label><span class="detail-text">承运商名称</span>
+          </div>
+          <div class="span8">
+            <label>shipperNo：</label><span class="detail-text">承运商编号 </span>
+          </div>
+        </div>    
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>afterSalesAddress：</label><span class="detail-text">退货地址 </span>
+          </div>
+          <div class="span8">
+            <label>addressTown：</label><span class="detail-text">收货人镇</span>
+          </div>
+        </div>    
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>addressProvince：</label><span class="detail-text">收货人省</span>
+          </div>
+          <div class="span8">
+            <label>afterSalesMobile：</label><span class="detail-text">退货人联系电话</span>
+          </div>
+        </div>    
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>consigneePostcode：</label><span class="detail-text">收货人邮编</span>
+          </div>
+          <div class="span8">
+            <label>consigneeRemark：</label><span class="detail-text">买家留言 </span>
+          </div>
+        </div>    
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>consigneeName：</label><span class="detail-text">	客户姓名</span>
+          </div>
+          <div class="span8">
+            <label>splitFlag：</label><span class="detail-text">是否拆单</span>
+          </div>
+        </div>    
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>consigneeAddress：</label><span class="detail-text">收货人地址 </span>
+          </div>
+          <div class="span8">
+            <label>addressCity：</label><span class="detail-text">收货人市</span>
+          </div>
+        </div>    
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>isvUUID：</label><span class="detail-text">女装</span>
+          </div>
+          <div class="span8">
+            <label>receivable：</label><span class="detail-text">应收金额 </span>
+          </div>
+        </div>
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>packWeight：</label><span class="detail-text">女装</span>
+          </div>
+          <div class="span8">
+            <label>packageNo：</label><span class="detail-text">666</span>
+          </div>
+        </div>
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>consigneeMobile：</label><span class="detail-text">客户手机 </span>
+          </div>
+          <div class="span8">
+            <label>expectDeliveryDate：</label><span class="detail-text">预计送达时间 </span>
+          </div>
+          <div class="span8">
+            <label>currentStatus：</label><span class="detail-text">出库单当前状态 </span>
+          </div>
+        </div>
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>salePlatformSource：</label><span class="detail-text">销售平台来源</span>
+          </div>
+          <div class="span8">
+            <label>shopNo：</label><span class="detail-text">开放平台店铺编号 </span>
+          </div>
+          <div class="span8">
+            <label>salesPlatformOrderNo：</label><span class="detail-text">销售平台订单号 </span>
+          </div>
+        </div>
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>transType：</label><span class="detail-text">	配送方式 </span>
+          </div>
+        </div>
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>soStatusCode：</label><span class="detail-text">女装</span>
+          </div>
+          <div class="span8">
+            <label>operateTime：</label><span class="detail-text">666</span>
+          </div>
+        </div>
+       	<div class="row detail-row">   
+          <div class="span8">
+            <label>soStatusName：</label><span class="detail-text">666</span>
+          </div>
+          <div class="span8">
+            <label>operateUser：</label><span class="detail-text">666</span>
+          </div>
+        </div>
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>afterSalesName：</label><span class="detail-text">退货人姓名</span>
+          </div>
+        </div>
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>price：</label><span class="detail-text">女装</span>
+          </div>
+          <div class="span8">
+            <label>quantity：</label><span class="detail-text">666</span>
+          </div>
+          <div class="span8">
+            <label>goodsNo：</label><span class="detail-text">666</span>
+          </div>
+        </div>
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>consigneeEmail：</label><span class="detail-text">客户邮箱 </span>
+          </div>
+          <div class="span8">
+            <label>warehouseNo：</label><span class="detail-text">出库库房编号</span>
+          </div>
+          <div class="span8">
+            <label>salesPlatformCreateTime：</label><span class="detail-text">销售平台下单时间	客户姓名</span>
+          </div>
+        </div>
+        <div class="row detail-row">      
+          <div class="span8">
+            <label>consigneePhone：</label><span class="detail-text">客户联系电话 </span>
+          </div>
+          <div class="span8">
+            <label>expectDate：</label><span class="detail-text">要求送货日期</span>
+          </div>
+        </div>
+        <p>
+        	orderDetailList 出库商品集合
+        </p>
+        <p>orderPackageList  发货包裹明细集合 </p>
+        <p>orderStatusList   	状态流水集合</p>
+      </form>
+    </div>
+  </div>
+
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script src="../../javascripts/utils.js"></script>
+
+<script type="text/javascript">
+	
+</script>
+</body>
+</html>

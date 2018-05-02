@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>供应商管理</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+
+    <div class="container">
+        <form id="searchForm" class="form-horizontal">
+            <div class="row">
+                <div class="control-group span8">
+                    <label class="control-label">事业部编号：</label>
+                    <div class="controls">
+                        <select name="deptNo" id="deptNo"></select>
+                    </div>
+                </div>
+                <div class="span2">
+                    <button type="button" id="btnSearch" class="button button-primary">搜索</button>
+                </div>
+            </div>
+        </form>
+        <div class="search-grid-container">
+            <div id="grid"></div>
+        </div>
+    </div>
+    <script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+    <script type="text/javascript" src="../../assets/js/config-min.js"></script>
+    <script src="../../javascripts/ajax.js"></script>
+    <script type="text/javascript">
+        (function() {
+            getDeptNo(function(data) {
+                if (data && data.length > 0) {
+                    var obj = document.getElementById("deptNo");
+
+                    for(var i = 0; i < data.length; i++) {
+                        obj.options.add(new Option(data[i].deptNo, data[i].deptNo));
+                    }
+                }
+            })
+        })();
+        BUI.use(['common/search'], function (Search) {
+            var columns = [
+                    {title: '事业部名称', dataIndex: 'deptName', width: 150},
+                    {title: '事业部编号', dataIndex: 'deptNo', width: 150},
+                    {title: '供应商名称', dataIndex: 'supplierName', width: 150},
+                    {title: '供应商编号', dataIndex: 'eclpSupplierNo', width: 150},
+                    {title: '供应商类型', dataIndex: 'supplierType', width: 100},
+                    {title: '电话', dataIndex: 'phone', width: 100},
+                    {title: '传真', dataIndex: 'fax', width: 100},
+                    {title: 'Email', dataIndex: 'email', width: 100},
+                    {title: '状态', dataIndex: 'status', width: 80},
+                    {title: 'contacts', dataIndex: 'contacts', width: 100},
+                    {title: '省', dataIndex: 'province', width: 80},
+                    {title: '市', dataIndex: 'city', width: 80},
+                    {title: '县 ', dataIndex: 'county', width: 80},
+                    {title: '镇', dataIndex: 'town', width: 80}
+                ],
+                store = Search.createStore("querySupplier", {
+                    autoSync: true
+                }),
+                gridCfg = Search.createGridCfg(columns, {
+                    tbar: {
+                        items: [
+                           /* {text: '<i class="icon-check"></i>批量标记', btnCls: 'button button-small', handler: moreSave},*/
+                        ]
+                    },
+                    plugins: [BUI.Grid.Plugins.CheckSelection] // 插件形式引入多选表格
+                });
+
+            var search = new Search({
+                    store: store,
+                    gridCfg: gridCfg
+                }),
+                grid = search.get('grid');
+        });
+        function getDeptNo(cb) {
+            sendJquery('/page/jd/getDeptNo', null, 'GET', false, function(data) {
+                cb(data);
+            })
+        }
+    </script>
+
+    <body>
+</html>

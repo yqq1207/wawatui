@@ -1,0 +1,516 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>娃娃列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../assets/css/page-min.css" rel="stylesheet" type="text/css"/>
+    <style>
+        .form-horizontal .controls {
+            height: 30px;
+        }
+
+        .span10 {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="content" class="hide demo-content">
+        <form id="J_Form" class="form-horizontal">
+            <div class="control-group span10">
+                <label class="control-label">娃娃编号：</label>
+                <div class="controls">
+                    <input name="id" type="text" data-rules="{required:true}" disabled="disabled"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <input name="aid" type="hidden" class="control-text" />
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">娃娃名称：</label>
+                <div class="controls">
+                    <input name="name" type="text" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">尺寸：</label>
+                <div class="controls">
+                    <input name="size" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">兑换能量：</label>
+                <div class="controls">
+                    <input name="energy" type="number" class="control-text"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">类型：</label>
+                <div class="controls">
+                    <select name="type" id="type">
+                        <option value="0">娃娃</option>
+                        <option value="1">红包</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">新旧图类：</label>
+                <div class="controls">
+                    <select name="newtype" id="newtype">
+                        <option value="1">新展示图</option>
+                        <option value="0">旧展示图</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">消耗金币：</label>
+                <div class="controls">
+                    <input name="useGold" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">RMB价值：</label>
+                <div class="controls">
+                    <input name="rmbprice" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">实际价值：</label>
+                <div class="controls">
+                    <input name="price" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">其他成本：</label>
+                <div class="controls">
+                    <input name="otherPrice" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">盈利：</label>
+                <div class="controls">
+                    <input name="getPrice" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">难度系数：</label>
+                <div class="controls">
+                    <input name="hardCft" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">修正区间：</label>
+                <div class="controls">
+                    <input name="offset" type="number" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">娃娃机内：</label>
+                <div class="controls">
+                    <input name="ptoysimg" type="text" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">背包资源：</label>
+                <div class="controls">
+                    <input name="ppackageimg" type="text" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">展示资源：</label>
+                <div class="controls">
+                    <input name="pshowimg" type="text" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+            <div class="control-group span10">
+                <label class="control-label">详情资源：</label>
+                <div class="controls">
+                    <input name="pdetailsimg" type="text" class="control-text" data-rules="{required:true}"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="search-grid-container">
+        <div id="grid">
+            <div>
+
+            </div>
+            <div>
+
+            </div>
+        </div>
+    </div>
+	<div id="contentForm" class="hide demo-content">
+        <form enctype="multipart/form-data">  
+		    <input type="file" name="fileField" id="fileField" multiple="multiple">  
+		    <button onclick="upload()" style="margin-top: 30px;">上传</button>  
+		</form> 
+	</div>
+
+</div>
+<script type="text/javascript" src="../../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../../assets/js/bui-min.js"></script>
+<script type="text/javascript" src="../../assets/js/config-min.js"></script>
+<script src="../../javascripts/ajax.js"></script>
+<script type="text/javascript">
+
+    var Form = BUI.Form;
+
+    new Form.Form({
+        srcNode: '#J_Form'
+    }).render();
+
+    function changeMotail(detial, howHandle, dialog, petId) {//修改
+        var handleCode = 0;//操作的code码，0是编辑，1是添加
+        if (!detial) {
+            detial = {
+                pid: '',
+                name: '',
+                size: '',
+                energy: '',
+                type: '',
+                newtype: '',
+                useGold: '',
+                rmbprice: '',
+                price: '',
+                otherPrice: '',
+                getPrice: '',
+                hardCft: '',
+                offset: '',
+                ptoysimg: '',
+                ppackageimg: '',
+                pshowimg: '',
+                pdetailsimg: '',
+            };
+            handleCode = 1;
+            $('#J_Form').find('input').val('');
+            $('#J_Form').find('input').eq(0).val(petId);
+        } else {
+        	console.log(detial)
+            var numAll = $('#J_Form').find('input').length;
+            $('#J_Form').find('input[name=id]').val(detial.pid);
+            $('#J_Form').find('input[name=name]').val(detial.name);
+            $('#J_Form').find('input[name=size]').val(detial.size);
+            $('#J_Form').find('input[name=energy]').val(detial.energy);
+            $('#J_Form').find('input[name=useGold]').val(detial.useGold);
+            $('#J_Form').find('input[name=rmbprice]').val(detial.rmbprice);
+            $('#J_Form').find('input[name=price]').val(detial.price);
+            $('#J_Form').find('input[name=aid]').val(detial.aid);
+            $('#J_Form').find('input[name=otherPrice]').val(detial.otherPrice);
+            $('#J_Form').find('input[name=getPrice]').val(detial.getPrice);
+            $('#J_Form').find('input[name=hardCft]').val(detial.hardCft);
+            $('#J_Form').find('input[name=offset]').val(detial.offset);
+            $('#J_Form').find('input[name=ptoysimg]').val(detial.ptoysimg);
+            $('#J_Form').find('input[name=ppackageimg]').val(detial.ppackageimg);
+            $('#J_Form').find('input[name=pshowimg]').val(detial.pshowimg);
+            $('#J_Form').find('input[name=pdetailsimg]').val(detial.pdetailsimg);
+        }
+
+        dialog.set('title', howHandle);
+        dialog.show();
+
+    }
+
+
+//兑换能量的方法
+$('#J_Form').find('input[name=rmbprice]').blur(function(){
+	var num = $(this).val();
+	if(num){
+		var energy = (num - 4.5)*10;
+		if(energy<0){
+			energy = 0;
+		}
+		$('#J_Form').find('input[name=energy]').val(energy);
+	}
+	
+})
+
+    var grid = null;
+
+    BUI.use(['common/search', 'common/page', 'bui/overlay'], function (Search, Page, Overlay) {
+        var dialog = new Overlay.Dialog({
+            title: '',
+            width: 550,
+            height: 580,
+            mask: true, // 显示mask
+            zIndex: 1000, // 自定义zindex，比message的更小
+            maskShared: false, // 不共用mask
+            //配置文本
+            contentId: 'content',
+            success: function () {//修改的方法
+                BUI.Message.Show({
+                    msg: '确认提交?',
+                    icon: 'question',
+                    buttons: [
+                        {
+                            text: 'yes',
+                            elCls: 'button button-primary',
+                            handler: function () {
+                                dialog.close();
+                                this.close();
+                                var items = $('.bui-stdmod-body').find('input');
+                                var handleCode = $('.bui-stdmod-header .header-title').text();
+                                var detial = new Object();
+
+                                for (var i = 0; i < items.length; i++) {
+                                    detial[items[i].name] = items[i].value;
+                                }
+
+                                detial.type = $("#type").val();
+                                detial.newtype = $("#newtype").val();
+
+                                if (handleCode == '新建') {
+                                    buildNewPet(detial);
+                                } else if (handleCode == '修改') {
+                                    updatePetRedirect(detial);
+                                }
+
+                            }
+                        },
+                        {
+                            text: 'no',
+                            elCls: 'button',
+                            handler: function () {
+                                this.close();
+                            }
+                        }
+
+                    ]
+                });
+            }
+        });
+
+
+        var type = {"0": "娃娃", "1": "红包"},
+            ntype = {"0": "旧展示图", "1": "新展示图"},
+
+            columns = [
+                {
+                    title: '娃娃编号', dataIndex: 'pid', width: 60, renderer: function (v) {
+                    return Search.createLink({
+                        id: 'detail' + v,
+                        title: '学生信息',
+                        text: v,
+                        href: 'detail/example.html',
+                    });
+                }
+                },
+                {title: '娃娃名称', dataIndex: 'name', width: 100,}, //隐藏
+                {title: '尺寸', dataIndex: 'size', width: 70},
+                {title: '兑换能量', dataIndex: 'energy', width: 70},
+                {title: '类型', dataIndex: 'type', width: 60, renderer: BUI.Grid.Format.enumRenderer(type)},
+                {title: '新旧图类型', dataIndex: 'newtype', width: 60, renderer: BUI.Grid.Format.enumRenderer(ntype)},
+                {title: '消耗金币', dataIndex: 'useGold', width: 60},
+                {title: 'RMB 价值', dataIndex: 'rmbprice', width: 60},
+                {title: '实际价值', dataIndex: 'price', width: 60},
+                {title: '其他成本', dataIndex: 'otherPrice', width: 60},
+                {title: '赢利', dataIndex: 'getPrice', width: 60},
+                {title: '难度系数', dataIndex: 'hardCft', width: 60},
+                {title: '修正区间值', dataIndex: 'offset', width: 60},
+                {title: '娃娃机内', dataIndex: 'ptoysimg', width: 60},
+                {title: '背包资源', dataIndex: 'ppackageimg', width: 60},
+                {title: '展示资源', dataIndex: 'pshowimg', width: 60},
+                {title: '详情资源', dataIndex: 'pdetailsimg', width: 60},
+                {
+                    title: '操作', dataIndex: '', width: 200, renderer: function (value, obj) {
+                    var editStr = '<span class="grid-command btn-edi" title="修改学生信息">修改</span>',
+                        delStr = '<span class="grid-command btn-del" title="删除学生信息">删除</span>';//页面操作不需要使用Search.createLink
+                    return editStr + delStr;
+                }
+                }
+            ],
+            store = Search.createStore("getPetsData"),
+            gridCfg = Search.createGridCfg(columns, {
+                tbar: {
+                    items: [
+                        {
+                            text: '<i class="icon-plus"></i>新建', btnCls: 'button button-small', handler: function () {
+                                var record = null;
+                                getLastPid(function(pid) {
+                                    changeMotail(record, '新建', dialog, pid);
+                                });
+                            }
+                        },
+                        {text: '<i class="icon-remove"></i>删除', btnCls: 'button button-small', handler: delFunction},
+                        {
+                            text: '<i class="icon-plus"></i>导入表格', btnCls: 'button button-small', handler: function () {
+                            	dialog2.show();
+                                }
+                        },
+                        {
+                            text: '<i class="icon-plus"></i>生效', btnCls: 'button button-small', handler: function () {
+                                    alert('生效')
+                                }
+                        }
+                        
+                    ]
+                },
+                plugins: [BUI.Grid.Plugins.CheckSelection] // 插件形式引入多选表格
+            });
+
+        var search = new Search({
+            store: store,
+            gridCfg: gridCfg,
+        });
+        grid = search.get('grid');
+
+		//导入的模板   
+		var dialog2 = new Overlay.Dialog({
+            title: '批量导入订单',
+            width: 350,
+            height: 200,
+            buttons: [],
+            contentId: 'contentForm'
+        });
+
+        //删除操作
+
+        function delFunction() {
+            var selections = grid.getSelection();
+            delItems(selections);
+        }
+
+        function delItems(items) {
+            var ids = {
+                aid: [],
+                pid: [],
+
+            };
+            BUI.each(items, function (item) {
+                ids.aid.push(item.aid);
+                ids.pid.push(parseInt(item.pid));
+            });
+
+            if (ids.aid.length) {
+                BUI.Message.Confirm('确认要删除选中的记录么？', function () {
+                    delPets(ids.aid);
+
+                }, 'question');
+            }
+        }
+
+        //监听事件，删除一条记录
+        grid.on('cellclick', function (ev) {
+            var sender = $(ev.domTarget); //点击的Dom
+            var record = ev.record;
+            if (sender.hasClass('btn-del')) {
+                delItems([record]);
+            } else if (sender.hasClass('btn-edi')) {
+                changeMotail(record, '修改', dialog);
+            }
+        });
+
+
+        //新建
+        function buildNewPet(data) {
+            var params = {
+                id: data.id,
+                name: data.name,
+                size: data.size,
+                energy: data.energy,
+                type: data.type,
+                newtype: data.newtype,
+                useGold: data.useGold,
+                rmbprice: data.rmbprice,
+                price: data.price,
+                otherPrice: data.otherPrice,
+                getPrice: data.getPrice,
+                hardCft: data.hardCft,
+                offset: data.offset,
+                ptoysimg: data.ptoysimg,
+                ppackageimg: data.ppackageimg,
+                pshowimg: data.pshowimg,
+                pdetailsimg: data.pdetailsimg
+            };
+            sendJquery('/page/pet/buildNewPet', params, 'POST', false, function (data) {
+                if (data.ErrorCode == 0) {
+                    BUI.Message.Alert('成功', 'success');
+                    store.load();
+                } else {
+                    BUI.Message.Alert(data.data, 'info');
+                }
+            });
+        }
+
+
+        //编辑
+        function updatePetRedirect(data) {
+            var data = {
+                aid: data.aid,
+                name: data.name,
+                size: data.size,
+                energy: data.energy,
+                type: data.type,
+                newtype: data.newtype,
+                useGold: data.useGold,
+                rmbprice: data.rmbprice,
+                price: data.price,
+                otherPrice: data.otherPrice,
+                getPrice: data.getPrice,
+                hardCft: data.hardCft,
+                offset: data.offset,
+                ptoysimg: data.ptoysimg,
+                ppackageimg: data.ppackageimg,
+                pshowimg: data.pshowimg,
+                pdetailsimg: data.pdetailsimg
+            };
+
+            sendJquery('/page/pet/updatePetRedirect', data, 'POST', true, function (data) {
+                if (data.ErrorCode == 0) {
+                    BUI.Message.Alert('成功', 'success');
+                    store.load();
+                } else {
+                    BUI.Message.Alert('失败', 'info');
+                }
+            });
+        }
+
+        //删除娃娃机
+        function delPets(ids) {
+            var data = {};
+            data.list = ids;
+            sendJquery('/page/pet/delPets', data, 'POST', true, function (data) {
+                if (data.ErrorCode == 0) {
+                    BUI.Message.Alert('成功', 'success');
+                    store.load();
+                } else {
+                    BUI.Message.Alert('失败', 'info');
+                }
+            })
+        }
+
+        function getLastPid(cb) {
+            sendJquery('/page/pet/getLastPid', null, 'GET', true, function (data) {
+                if (data) {
+                    cb && cb(data);
+                }
+            })
+        }
+    });
+    //批量导入
+	function upload(){
+	    var file = document.querySelector('#fileField');
+	    var formData = new FormData();
+	    formData.append('fileField', file.files[0]);
+	    formData.append('type', $('#importType').val());
+	    formData.append('startDate', $('#startDate').val());
+	    formData.append('endDate', $('#endDate').val());
+	
+		uploadFile('/page/pet/fileupload', formData, function(data){
+			console.log(data)
+			 if (data.ErrorCode == 0) {
+	            BUI.Message.Alert('成功', 'success');
+	            store.load();
+	        } else {
+	            BUI.Message.Alert('失败', 'info');
+	        }
+		})
+	}
+</script>
+
+<body>
+</html>

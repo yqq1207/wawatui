@@ -1,0 +1,216 @@
+var urllib = require('urllib');
+
+var URLS = {
+	//第一次打开应用
+	firstStart: 'http://log.reyun.com/receive/rest/install',
+	//打开应用
+	everyStart: 'http://log.reyun.com/receive/rest/startup',
+	//注册
+	register: 	'http://log.reyun.com/receive/rest/register',
+	//登陆
+	logined:		'http://log.reyun.com/receive/rest/loggedin',
+	//支付
+	payment:	'http://log.reyun.com/receive/rest/payment',
+	//虚拟交易消费
+	economy:	'http://log.reyun.com/receive/rest/economy',
+	//任务/关卡/副本方法
+	quest:		'http://log.reyun.com/receive/rest/quest',
+	//自定义事件
+	selfEvent:	'http://log.reyun.com/receive/rest/event',
+	//玩家在线
+	heartBeat:	'http://log.reyun.com/receive/rest/heartbeat'
+};
+
+var Reyun = function(config, debug = false) {
+	if (!config) throw new Error('参数不能为空');
+	if (!config.appId) throw new Error('appid为必传参数');
+
+	this.appid = config.appId;
+};
+
+//第一次打开应用
+Reyun.prototype.firstStart = function(params, callback) {
+	var that = this;
+	var pkg = Object.assign({}, params, {
+		appid: that.appid
+	});
+
+	var needs = ['context'];
+	var context = ['deviceid'];
+
+	return this.request(pkg, {type: 'firstStart', needs, context}, callback);
+};
+
+//打开应用
+Reyun.prototype.everyStart = function(params, callback) {
+	var that = this;
+	var pkg = Object.assign({}, params, {
+		appid: that.appid
+	});
+
+	var needs = ['context'];
+	var context = ['deviceid'];
+
+	return this.request(pkg, {type: 'everyStart', needs, context}, callback);
+};
+
+//注册
+Reyun.prototype.register = function(params, callback) {
+	var that = this;
+	var pkg = Object.assign({}, params, {
+		appid: that.appid
+	});
+
+	var needs = ['context', 'who'];
+	var context = ['deviceid'];
+
+	return this.request(pkg, {type: 'register', needs, context}, callback);
+};
+
+//登陆
+Reyun.prototype.loginServer = function(params, callback) {
+	var that = this;
+	var pkg = Object.assign({}, params, {
+		appid: that.appid
+	});
+
+	var needs = ['context', 'who'];
+	var context = ['deviceid'];
+
+	return this.request(pkg, {type: 'logined', needs, context}, callback);
+};
+
+//支付
+Reyun.prototype.payment = function(params, callback) {
+	var that = this;
+	var pkg = Object.assign({}, params, {
+		appid: that.appid
+	});
+
+	var needs = ['context', 'who'];
+	var context = ['deviceid', 'transactionid', 'paymenttype', 'currencytype', 'currencyamount', 'virtualcoinamount', 'iapname', 'iapamount'];
+
+	return this.request(pkg, {type: 'payment', needs, context}, callback);
+};
+
+//虚拟交易消费
+Reyun.prototype.economy = function(params, callback) {
+	var that = this;
+	var pkg = Object.assign({}, params, {
+		appid: that.appid
+	});
+
+	var needs = ['context', 'who'];
+	var context = ['deviceid', 'itemname', 'itemamount', 'itemtotalprice'];
+
+	return this.request(pkg, {type: 'economy', needs, context}, callback);
+};
+
+//任务/关卡/副本方法
+Reyun.prototype.quest = function(params, callback) {
+	var that = this;
+	var pkg = Object.assign({}, params, {
+		appid: that.appid
+	});
+
+	var needs = ['context', 'who'];
+	var context = ['deviceid', 'questid', 'queststatus', 'questtype'];
+
+	return this.request(pkg, {type: 'quest', needs, context}, callback);
+};
+
+//自定义事件
+Reyun.prototype.selfEvent = function(params, callback) {
+	var that = this;
+	var pkg = Object.assign({}, params, {
+		appid: that.appid
+	});
+
+	var needs = ['context', 'who', 'what'];
+	var context = ['deviceid', 'questid', 'queststatus', 'questtype'];
+
+	return this.request(pkg, {type: 'selfEvent', needs, context}, callback);
+};
+
+//玩家在线
+Reyun.prototype.heartBeat = function(params, callback) {
+	var that = this;
+	var pkg = Object.assign({}, params, {
+		appid: that.appid
+	});
+
+	var needs = ['context', 'who'];
+	var context = ['deviceid', 'level'];
+
+	return this.request(pkg, {type: 'heartBeat', needs, context}, callback);
+};
+
+Reyun.prototype.request = function(params, options, callback) {
+
+	if (typeof callback == 'function') {
+		return this._request(params, options, callback);
+	}
+};
+
+Reyun.prototype._request = function(params, options, callback) {
+	var that = this;
+	var type = options.type;
+	var needs = options.needs || [];
+	var context = options.context || [];
+	var pContext = params.context;
+
+	//console.log("11111111111: ", params, options);
+
+	// 验证参数合法且完整
+	var missing = [];
+	needs.forEach(function(key) {
+		var keys = key.split('|');
+		for (var i = 0; i < keys.length; i++) {
+			if (params[keys[i]]) return;
+		}
+		missing.push(key);
+	});
+	
+	context.forEach(function(key) {
+		var keys = key.split('|');
+		for (var i = 0; i < keys.length; i++) {
+			if (pContext[keys[i]]) return;
+		}
+		missing.push(key);
+	});
+	
+	if (missing.length) return callback('missing params: ' + missing.join(', '));
+
+	console.log("params: ", params);
+
+	// 创建请求参数
+	var pkg = {
+		method: 'POST',
+		contentType: 'json',
+		data: params
+	};
+
+	urllib.request(URLS[type], pkg, function(err, data, res) {
+		if (err) return callback(err);
+		that.validate(data.toString(), type, callback);
+	});
+};
+
+Reyun.prototype.validate = function(json, type, callback) {
+	if (typeof type == 'function') {
+		callback = type;
+		type = null;
+	}
+
+	if (typeof callback == 'function') {
+		return this._validate(json, type, callback);
+	}
+}
+
+Reyun.prototype._validate = function(json, type, callback) {
+	if (this) console.info('---- reyun debug ----\n' + json);
+
+	callback(null, json);
+};
+
+module.exports = Reyun;

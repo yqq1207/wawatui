@@ -1,0 +1,70 @@
+{
+  "sendOrder": {
+    "touser": "${TOUSER}",
+    "template_id": "${TEMPID}",
+    "data": {
+      "first": {
+        "value": "${USERNAME}您好,您的订单有最新更新",
+        "color": "#000"
+      },
+      "keyword1": {
+        "value": "${ORDER}",
+        "color": "#173177"
+      },
+      "keyword2": {
+        "value": "${COMP}",
+        "color": "#173177"
+      },
+      "keyword3": {
+        "value": "${PEOPLE}",
+        "color": "#173177"
+      },
+      "keyword4": {
+        "value": "${TYPE}",
+        "color": "#173177"
+      },
+      "keyword5": {
+        "value": "${ODATE}",
+        "color": "#173177"
+      },
+      "remark": {
+        "value": " 如有疑问，请致电客服。",
+        "color": "#000"
+      }
+    }
+  },
+  "newPet": {
+    "touser": "${TOUSER}",
+    "template_id": "${TEMPID}",
+    "url": "${URL}",
+    "data": {
+      "first": {
+        "value": "${HEAD}",
+        "color": "#000"
+      },
+      "keyword1": {
+        "value": "${CONTENT1}",
+        "color": "#173177"
+      },
+      "keyword2": {
+        "value": "${CONTENT2}",
+        "color": "#173177"
+      },
+      "keyword3": {
+        "value": "${ODATE}",
+        "color": "#173177"
+      },
+      "remark": {
+        "value": "${MARK}",
+        "color": "#000"
+      }
+    },
+    "annotation": {
+      "first": "消息头",
+      "keyword1": "商品名称",
+      "keyword2": "游戏结果",
+      "keyword3": "时间",
+      "remark": "消息尾"
+    }
+  }
+}

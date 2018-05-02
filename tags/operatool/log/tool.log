@@ -1,0 +1,4 @@
+[2017-11-02 18:24:27.249] DEBUG  cache client on auth: null Q&z%3VRRCO null
+[2017-11-04 14:04:57.036] DEBUG  cache client on auth: null Q&z%3VRRCO null
+[2017-11-04 16:04:24.187] DEBUG  econnomy:  {"context":{"deviceid":"4219b957-da6d-43e4-a657-f223170cfd6f","channelid":"Wechat","serverid":"123.206.62.88","itemname":"活动赠送","itemamount":1,"itemtotalprice":"4000"},"who":"200481"}
+[2017-11-04 16:04:24.433] DEBUG  economy:  {"status":0}

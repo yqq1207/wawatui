@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>抓娃娃后台管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../assets/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../assets/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../assets/css/main-min.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+
+<div class="header">
+
+    <div class="dl-title">
+        <span class="lp-title-port">抓娃娃</span>
+        <span class="dl-title-text">后台管理</span>
+    </div>
+
+    <% if(isLogined){ %>
+    <div class="dl-log">欢迎您，<span class="dl-log-user"><%= name %></span>
+        <a href="/backstage/logout" title="退出系统" class="dl-log-quit">[退出]</a>
+    </div>
+    <% }else{ %>
+    <form method="POST" action="/backstage/login">
+        <input type="text" id="name" name="name" value="chyingp"/>
+        <input type="password" id="password" name="password" value="123456"/>
+        <input type="submit" value="登录" id="login"/>
+    </form>
+    <% } %>
+</div>
+
+<div class="content">
+    <div class="dl-main-nav">
+        <div class="dl-inform">
+            <div class="dl-inform-title">贴心小秘书<s class="dl-inform-icon dl-up"></s></div>
+        </div>
+        <ul id="J_Nav" class="nav-list ks-clear">
+            <li class="nav-item dl-selected">
+                <div class="nav-item-inner nav-home">首页</div>
+            </li>
+            <li class="nav-item">
+                <div class="nav-item-inner nav-order">京东物流</div>
+            </li>
+        </ul>
+    </div>
+    <ul id="J_NavContent" class="dl-tab-conten">
+
+    </ul>
+</div>
+<script type="text/javascript" src="../assets/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="../assets/js/bui.js"></script>
+<script type="text/javascript" src="../assets/js/config.js"></script>
+
+<script>
+    BUI.use('common/main', function () {
+        var config = [{
+            id: 'menu',
+            homePage: 'code',
+            menu: [{
+                text: '基础配置',
+                items: [
+                ]
+            }, {
+                text: '娃娃机管理',
+                items: [
+                    {id: 'machine', text: '机器列表', href: '../page/machine/machinelist.html'},
+                    {id: 'petlist', text: '娃娃列表', href: '../page/pet/petlist.html'}
+                ]
+            }, {
+                text: '订单管理',
+                items: [
+                    {id: 'ordernosend', text: '配货中订单', href: '../page/order/orderlist1.html'},
+                    {id: 'orderfinish', text: '已发货订单', href: '../page/order/orderlist3.html'},
+                    {id: 'orderyesend', text: '发货中订单', href: '../page/order/orderlist2.html'},
+                    {id: 'checkorder', text: '订单核查', href: '../page/order/checkOrder.html'}
+                ]
+            }, {
+                text: '消息管理',
+                items: [
+                    {id: 'wechatmsg', text: '公众号模板', href: '../page/msg/allTemplate.html'},
+                    {id: 'sendtemp', text: '模板通告', href: '../page/msg/sendTemp.html'},
+                    {id: 'sendmsg', text: '发送短信', href: '../page/msg/sendMsg.html'}
+                ]
+            }, {
+                text: '工单管理',
+                items: [
+                    {id: 'bugList', text: '工单列表', href: '../page/bug/bugList.html'},
+                    {id: 'bugList', text: '问题反馈', href: '../page/bug/bugSend.html'}
+                ]
+            }, {
+                text: '玩家管理',
+                items: [
+                    {id: 'playerlist', text: '玩家列表', href: '../page/player/playerlist.html'},
+                    {id: 'chargelist', text: '充值数据', href: '../page/player/rechargelist.html'}
+                ]
+            }, {
+                text: '系统管理',
+                items: [
+                    {id: 'accountlist', text: '用户列表', href: '../page/account/userlist.html'},
+                    {id: 'rolelist', text: '角色管理', href: '../page/account/rolelist.html'},
+                    {id: 'privilelist', text: '权限管理', href: '../page/account/privilelist.html'}
+                ]
+            },
+                {
+                    text: '邮件',
+                    items: [
+                        {id: 'mail', text: '邮件', href: '../page/mail/mail.html'},
+                    ]
+                }
+            ]
+        }, {
+            id: 'jd',
+            menu: [{
+                text: '基本信息',
+                items: [
+                    {id: 'dept', text: '事业部信息', href: '../page/jd/dept.html'},
+                    {id: 'spSource', text: '销售平台信息', href: '../page/jd/spSource.html'},
+                    {id: 'shop', text: '店铺信息', href: '../page/jd/shop.html'},
+                    {id: 'warehouse', text: '仓库信息', href: '../page/jd/warehouse.html'},
+                    {id: 'querySupplier', text: '供应商信息', href: '../page/jd/querySupplier.html'}
+                ]
+            },
+            {
+                text: '主商品管理',
+                items: [
+                    {id: 'categy', text: '商品分类', href: '../page/jd/categy.html'},
+                    {id: 'transportGoodsInfo', text: '主商品信息管理', href: '../page/jd/transportGoodsInfo.html'},
+                ]
+            },
+            {
+                text: '采购入库单管理',
+                items: [
+                    {id: 'poOrderManger', text: '采购入库单管理', href: '../page/jd/poOrderManger.html'},
+                    {id: 'cpoOrderManger', text: '已取消入库单', href: '../page/jd/cpoOrderManger.html'},
+                    {id: 'queryReceivingResult', text: '入库单验收明细查询', href: '../page/jd/supplier.html'},
+                ]
+            },
+            {
+                text: '仓库实物库存管理',
+                items: [
+                    {id: 'queryStock', text: '仓库实物库存查询', href: '../page/jd/supplier.html'},
+                ]
+            },
+            {
+                text: '销售出库单管理',
+                items: [
+                    {id: 'ordermanage', text: '销售出库单管理', href: '../page/jd/ordermanage.html'},
+                    {id: 'cordermanage', text: '已取消销售出库单', href: '../page/jd/cordermanage.html'},
+                ]
+            },
+            {
+                text: '退货入库单管理',
+                items: [
+                    {id: 'transportRtw', text: '退货入库单下发', href: '../page/jd/supplier.html'},
+                    {id: 'queryRtw', text: '退货入库单', href: '../page/jd/supplier.html'},
+                    {id: 'isvRtsTransfer', text: '退供应商下发', href: '../page/jd/supplier.html'},
+                    {id: 'isvRtsCancel', text: '退供应商取消', href: '../page/jd/supplier.html'},
+                    {id: 'isvRtsQuery', text: '退供应商查询', href: '../page/jd/supplier.html'},
+                ]
+            }]
+        }];
+        new PageUtil.MainPage({
+            modulesConfig: config
+        });
+    });
+</script>
+</body>
+</html>
